@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>ページ情報</title>
+	<title>Webページ情報表示</title>
 	<style type="text/css">
 		html, body{
 			width: 100vw;
@@ -20,7 +20,7 @@
 		#main{
 			    background-color: #eee;
 				margin: 20px;
-				width: 75vw;
+				width: 80vw;
 				height: calc(100vh - 20px * 2);
 				font-size: 1.3rem;
 				overflow: auto;
@@ -30,22 +30,24 @@
 				align-items: center;
 				border-radius: 20px;
 		}
-		#main h1{
-			font-size: 2.2em;
-		}
 		#main h2{
-			font-size: 1.3em;
+			margin: 10px auto;
+			font-size: 1.3rem;
 		}
 		#main > div{
 			    border: solid #000 3px;
 				background-color: #fff;
-				width: 80%;
+				width: 85%;
 				margin: 10px 0;
 				word-break: break-all;
 		}
 		#main > div > div{
 			font-size: 1rem;
 			margin: 5px 0;
+		}
+		#main > span{
+			font-size: 1rem;
+			color: red;
 		}
 	</style>
 	<script type="text/javascript">
@@ -65,7 +67,6 @@
 </head>
 <body>
 	<div id="main">
-		<h1>Webページ情報表示</h1>
 		<div>
 			<h2>プロトコル</h2>
 			情報をやり取りするための通信方式。
