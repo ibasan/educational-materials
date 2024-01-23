@@ -51,7 +51,7 @@
 	<script type="text/javascript">
 		const protocol=window.location.protocol.slice(0,-1);
 	 	const domain=decodeURI(window.location.hostname);
-	 	const path=decodeURI(window.location.pathname);
+	 	const path=decodeURI(window.location.pathname.slice(1));
 
 	 	if(path.slice(-1)=="/"){
 	 		window.location.href+="index.html";
@@ -59,7 +59,7 @@
 		 window.onload=()=>{
 			document.getElementById("protocol").innerText="このページのプロトコルは"+(protocol?"「"+protocol+"」です":"ありません");
 			document.getElementById("domein").innerText="このページのドメインは"+(domain?"「"+domain+"」です":"ありません");
-			document.getElementById("path").innerText="このページのファイル名は"+(path?"「"+path+"」です":"ありません");
+			document.getElementById("path").innerText="このページのパス名は"+(path?"「"+path+"」です":"ありません");
 		};
 	</script>
 </head>
