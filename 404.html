@@ -56,9 +56,6 @@
 	 	if(path.slice(-1)=="/"){
 	 		window.location.href+="index.html";
 	 	}
-	 	if(protocol!="http"){
-	 		window.location.protocol="http";
-	 	}
 		 window.onload=()=>{
 			document.getElementById("protocol").innerText="このページのプロトコルは"+(protocol?"「"+protocol+"」です":"ありません");
 			document.getElementById("domein").innerText="このページのドメインは"+(domain?"「"+domain+"」です":"ありません");
