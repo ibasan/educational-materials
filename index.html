@@ -1,13 +1,87 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <script>
-    window.onload=()=>{
-      document.getElementById("main").innerText="プロトコルは"+window.location.protocol+"です";
-    };
-  </script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ページ情報</title>
+	<style type="text/css">
+		html, body{
+			width: 100vw;
+			height: 100vh;
+			overflow: hidden;
+			margin: 0;
+		}
+		body{
+			background-color: #aacf53;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#main{
+			    background-color: #eee;
+				margin: 20px;
+				width: 75vw;
+				height: calc(100vh - 20px * 2);
+				font-size: 1.3rem;
+				overflow: auto;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				border-radius: 20px;
+		}
+		#main h1{
+			font-size: 2.2em;
+		}
+		#main h2{
+			font-size: 1.3em;
+		}
+		#main > div{
+			    border: solid #000 3px;
+				background-color: #fff;
+				width: 80%;
+				margin: 10px 0;
+				word-break: break-all;
+		}
+		#main > div > div{
+			font-size: 1rem;
+			margin: 5px 0;
+		}
+	</style>
+	<script type="text/javascript">
+		const protocol=window.location.protocol.slice(0,-1);
+	 	const domain=decodeURI(window.location.hostname);
+	 	const path=decodeURI(window.location.pathname);
+
+	 	if(path.slice(-1)=="/"){
+	 		window.location.href+="index.html";
+	 	}
+		 window.onload=()=>{
+			document.getElementById("protocol").innerText="このページのプロトコルは"+(protocol?"「"+protocol+"」です":"ありません");
+			document.getElementById("domein").innerText="このページのドメインは"+(domain?"「"+domain+"」です":"ありません");
+			document.getElementById("path").innerText="このページのファイル名は"+(path?"「"+path+"」です":"ありません");
+		};
+	</script>
 </head>
 <body>
-  <h2 id="main">
-  </h2>
+	<div id="main">
+		<h1>Webページ情報表示</h1>
+		<div>
+			<h2>プロトコル</h2>
+			情報をやり取りするための通信方式。
+			<div id="protocol"></div>
+		</div>
+		<div>
+			<h2>ドメイン名</h2>
+			国や組織名、サーバ名などを組み合わせて表現した、サーバやネットワークを識別する名前。
+			<div id="domein"></div>
+		</div>
+		<div>
+			<h2>パス名</h2>
+			情報が収められているフォルダ名やファイル名を示している。
+			<div id="path"></div>
+		</div>
+		<span>※技術科の教科書 204ページも確認すること。</span>
+	</div>
 </body>
 </html>
