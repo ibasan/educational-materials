@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>フランカー課題</title>
+	<style type="text/css">
+		html, body{
+			width: 100%;
+			height: 100%;
+			margin: 0;
+		}
+		body > div{
+			width: 100%;
+			height: 100%;
+			text-align: center;
+		}
+		#name{
+			font-size: 3rem;
+			height: 80px;
+		}
+		#main1_to_main2{
+			font-size: 2rem;
+			vertical-align: bottom;
+			line-height: 80px;
+			margin-left: 10px;
+		}
+		#main1_input_items, .question, .target{
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.import_span{
+			font-weight: bold;
+			color: red;
+		}
+		.turn{
+			transform: scaleX(-1);
+		}
+		.introduction{
+			font-size: 1.3rem;
+			padding: 20px;
+		}
+		#countdown{
+			font-size: 10rem;
+			color: red;
+		}
+		.main, .question{
+			display:none;
+		}
+		.question{
+			background-color: #fff;
+		}
+		.target{
+			position: absolute;
+			z-index: -1;
+		}
+		.question img[src="fish.svg"], img[src="target.svg"]{
+			width: 7vw;
+			transform: translateY(calc(50vh - 3.5vw));
+		}
+		.super_main > div{
+			width: 100%;
+			height: 100%;
+		}
+		.sample{
+			width: 7vw;
+			display: block;
+			margin: 0 auto;
+		}
+	</style>
+	<script type="text/javascript">
+		//ページの読み込みが完了したら実行
+		window.addEventListener("load", ()=>{
+			//出題する問題数を指定
+			let question_count=2;
+			//class="main" と付いているタグをすべて取得
+			const main_divs=Array.from(document.getElementsByClassName("main"));
+			//class="question" と付いているタグをすべて取得
+			const question_divs=Array.from(document.getElementsByClassName("question"));
+			//現在表示中のdivのindexを示す変数を作成
+			let now_view=-1;
+			//ログを保管する配列を作成
+			let log=[];
+
+			//次のmainタグに進むための関数（next関数）を作成
+			const next=()=>{
+				//現在表示中のdivのindexを示す変数をカウントアップ
+				now_view++;
+				//すべてのmain_divsに登録されているdivに対して実行する
+				main_divs.forEach((div, index)=>{
+					if(index==now_view){
+						//もし、「現在表示中のdivのindexを示す変数」番目のdivなら、表示する
+						div.style.display="block";
+					}else{
+						//違うなら非表示にする
+						div.style.display="none";
+					}
+				});
+			};
+			//指定時間待機する、スリープ関数を作成
+			const sleep=(m)=>new Promise(_=> setTimeout(_, m));
+
+			//main1からmain2へ移動するためのボタンを設定する
+			document.getElementById("main1_to_main2").addEventListener("click", ()=>{
+				//現在、何が名前として入力されているか、取得する
+				const name=document.getElementById("name").value;
+				//もし、なにも入力されていなければ、警告を出す
+				if(name.length==0){
+					alert("先生に指示された通り、入力してください。");
+
+				//もし、なにか入力されていれば、次のmainに進む（next関数を起動する）
+				}else{
+					next();
+					//入力した名前をログに記録しておく
+					log.push(name);
+				}
+			});
+
+			//main2からmain3へ移動するための設定をする
+			const main2_keydown=(event)=>{
+				//右矢印か左矢印が押されたら、次に進むためのnext関数を実行する
+				if(event.key=="ArrowLeft" || event.key=="ArrowRight"){
+					next();
+					//main3のカウントダウンを起動
+					countdown();
+				}
+			};
+
+			//main3のカウントダウン
+			const countdown=async ()=>{
+				//数字が表示されるエリアを取得
+				const countdown_div=document.getElementById("countdown");
+				//現在の残り秒数を取得
+				let now_count=countdown_div.innerText-0;
+				//もし、数字以外が入っていたら、現在の値を6からにする
+				if(isNaN(now_count)){now_count=6;}
+
+				//now_count変数が1以上の間、ループする
+				while(now_count>1){
+					//now_count変数を1減らす
+					now_count--;
+					//数字が表示されるエリアの数字を変更する
+					countdown_div.innerText=now_count;
+					//1秒待つ
+					await sleep(1000);
+				}
+
+				//main4に移動
+				next();
+				//ログに記録
+				log.push("start", Date.now());
+				//main4の問題出題関数を起動
+				question();
+			};
+
+			//main4で問題出題中かどうかを示す変数を作成
+			let question_view=false;
+			//main4で実際に行われる部分
+			const question=async ()=>{
+				//問題を非表示にする
+				question_divs.forEach(question_div=>question_div.style.display="none");
+				question_view=false;
+
+				//もし、残り問題数が1未満なら、終了して次に進む
+				if(question_count<1){
+					next();
+					//終了したことをログに記録する
+					log.push("end");
+					//結果を自動的に送信する
+					send();
+
+				//問題数が1以上なら、問題を出題する
+				}else{
+					//どの問題を選ぶか、事前に抽選しておく
+					const select=Math.floor(Math.random()*question_divs.length);
+					//2秒～5秒待つ
+					await sleep(2000+Math.random()*3);
+					//残り問題数を減らす
+					question_count--;
+					//問題を表示する
+					question_divs[select].style.display="block";
+					question_view=true;
+					//問題を表示した時間を記録しておく
+					log.push("question-"+select, Date.now());
+				}
+			};
+			//main4でキー入力されたら実行する部分
+			const main4_keydown=(event)=>{
+				//いつ、何が押されたか記録しておく
+				log.push(event.key, Date.now());
+				//問題表示中で、右矢印または左矢印が押されたら（正解不正解に関わらず）次の問題を出す
+				if((question_view && event.key=="ArrowLeft" || event.key=="ArrowRight")){
+					question();
+				}
+			};
+
+			//結果の送信処理を行うところ
+			const send=()=>{
+				//集計しやすいように、記録をスタート時間との差分(ミリ秒単位)に整形
+				//スタート時間を抽出し、変数に格納
+				const start_time=log[2];
+				//1つ飛ばしで、すべてのログを走査
+				for(let i=4; i<log.length; i+=2){
+					//時刻をスタート時間との差分(ミリ秒単位)に整形
+					log[i]-=start_time;
+				}
+
+				/*//デバッグ用
+				console.log(log);
+				return;
+				*/
+
+				//GASのURLを指定
+				const url="https://script.google.com/macros/s/AKfycby-Kp025A42RrurxGxKB9CeEbUJs4PnsCpPGz4vzTHg5RZQzbB_qShfxe-rKqn-wHjK/exec";
+				//情報を送信（中身はおまじない）
+				fetch(url, {
+					method: "POST",
+					body: JSON.stringify(log),
+					mode: "no-cors",
+					headers:{"Content-Type": "application/json"}
+				})
+				.then(response => console.log("Success:", response))
+				.catch(error => console.error("Error:", error));
+			};
+
+			//キー入力したら実行される部分
+			document.addEventListener("keydown", event=>{
+				if(now_view==1){
+					//main2が表示されているときは、main2専用のkeydown関数を呼び出す
+					main2_keydown(event);
+				}else if(now_view==3){
+					//main4が表示されているときは、main4専用のkeydown関数を呼び出す
+					main4_keydown(event);
+				}
+			});
+			//はじめのdivを表示
+			next();
+		});
+	</script>
+</head>
+<body>
+	<div id="main1" class="main">
+		<div class="introduction">これはあなたを見分けるための大切な入力欄です。先生の指示をよく聞いて、入力してください。</div>
+		<div id="main1_input_items">
+			<input type="text" id="name" placeholder="名前 などを入力"><button id="main1_to_main2">次へ</button>
+		</div>
+	</div>
+	<div id="main2" class="main">
+		<div class="introduction">
+			この調査は〇〇のために行う調査です。<br>
+			1～2分程度で終わる簡単なもので、あなたの学校の成績には全く影響しません。<br>
+			また、この調査で得られた情報は、研究終了後、適切に廃棄します。
+		</div>
+		<div class="introduction">
+			今から、5匹の魚が、1列に並んだ絵が出てきます。<br>
+			この絵のうち、<span class="import_span">真ん中の魚が</span>右を向いていたら、キーボードの「→」を、左を向いていたら、キーボードの「←」を押してください。<br>
+			<span class="import_span">真ん中の魚以外は関係がありません。</span><br><br>
+
+			絵は間隔を開けて、何度か出てきます。<br>
+			出現していないときはどのボタンも押さないでください。<br>
+			出現したら<span class="import_span">出来るだけ早く</span>キーボードの「→」または「←」を押してください。
+		</div>
+		<img class="sample" src="fish.svg">
+		<div class="introduction">
+			「→」または「←」を入力すると、調査を開始します。
+		</div>
+	</div>
+	<div id="main3" class="main">
+		<div id="countdown">6</div>
+	</div>
+	<div id="main4" class="main super_main">
+		<div id="target"><img src="target.svg"></div>
+		<div id="no1" class="question">
+			<img src="fish.svg">
+			<img src="fish.svg">
+			<img src="fish.svg">
+			<img src="fish.svg">
+			<img src="fish.svg">
+		</div>
+		<div id="no2" class="question">
+			<img src="fish.svg">
+			<img src="fish.svg">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg">
+			<img src="fish.svg">
+		</div>
+		<div id="no3" class="question">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg" class="turn">
+		</div>
+		<div id="no4" class="question">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg">
+			<img src="fish.svg" class="turn">
+			<img src="fish.svg" class="turn">
+		</div>
+	</div>
+	<div id="main5" class="main">
+		<div class="introduction">
+			これで調査は終わりです。ご協力、ありがとうございました。<br>
+			この後は、先生の指示に従ってください。
+		</div>
+	</div>
+</body>
+</html>
