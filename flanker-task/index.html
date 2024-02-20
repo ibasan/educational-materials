@@ -39,9 +39,7 @@
 			font-weight: bold;
 			color: red;
 		}
-		.turn{
-			transform: scaleX(-1);
-		}
+
 		.introduction{
 			font-size: 1.3rem;
 			padding: 20px;
@@ -63,6 +61,9 @@
 		.question img[src="fish.svg"], img[src="target.svg"]{
 			width: 7vw;
 			transform: translateY(calc(50vh - 3.5vw));
+		}
+		.question img[src="fish.svg"].turn{
+			transform: translateY(calc(50vh - 3.5vw)) scaleX(-1);
 		}
 		.super_main > div{
 			width: 100%;
