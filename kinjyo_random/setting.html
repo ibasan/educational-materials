@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html style="width: 100%">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ランダム抽選ソフト設定画面</title>
+	<script type="text/javascript">
+		window.onload=()=>{
+			const kinjyo1=localStorage.getItem("kinjyo_31");
+			const kinjyo2=localStorage.getItem("kinjyo_32");
+			const kinjyo3=localStorage.getItem("kinjyo_33");
+
+			const ele31=document.getElementsByName('31');
+			const ele32=document.getElementsByName('32');
+			const ele33=document.getElementsByName('33');
+
+			if(kinjyo1!==null){
+				ele31[kinjyo1-1].checked=true;
+			}
+			if(kinjyo2!==null){
+				ele32[kinjyo2-1].checked=true;
+			}
+			if(kinjyo3!==null){
+				ele33[kinjyo3-1].checked=true;
+			}
+
+			[ele31, ele32, ele33].forEach(ele=>{
+				ele.forEach(e=>{
+					e.addEventListener("change", event=>{
+						const id=event.target.id;
+						localStorage.setItem("kinjyo_"+id.slice(0,2), id.slice(-1));
+					});
+				});
+			});
+		};
+
+
+		function del(){
+			if(confirm("このランダムソフト(笑)がお使いのPCに登録した情報を削除します。")){
+				localStorage.removeItem("kinjyo_31");
+				localStorage.removeItem("kinjyo_32");
+				localStorage.removeItem("kinjyo_33");
+				location.reload();
+			}
+		}
+	</script>
+</head>
+<body style="text-align: center; width: 80%; margin: 0 auto;">
+	<p style="color: red;">注意：このページで設定されたデータは、このブラウザ内に保存されます。抽選を行うブラウザと同じブラウザで、このページを表示するよう、お願いいたします。また、このページで設定を変更した場合は、設定を反映させるため、必ず、抽選ページの方も、再読み込みしてください。なお、このページで設定した情報は、ブラウザ内に、自動保存されます。</p>
+	
+	<h1>3年1組</h1>
+	<div>
+		<input type="radio" id="311" name="31">
+		<label for="311">A班（1班）</label>
+		<input type="radio" id="312" name="31">
+		<label for="312">B班（2班）</label>
+		<input type="radio" id="313" name="31">
+		<label for="313">C班（3班）</label><br>
+		<input type="radio" id="314" name="31">
+		<label for="314">D班（4班）</label>
+		<input type="radio" id="315" name="31">
+		<label for="315">E班（5班）</label>
+		<input type="radio" id="316" name="31">
+		<label for="316">F班（6班）</label>
+	</div>
+	<h1>3年2組</h1>
+	<div>
+		<input type="radio" id="321" name="32">
+		<label for="321">A班（1班）</label>
+		<input type="radio" id="322" name="32">
+		<label for="322">B班（2班）</label>
+		<input type="radio" id="323" name="32">
+		<label for="323">C班（3班）</label><br>
+		<input type="radio" id="324" name="32">
+		<label for="324">D班（4班）</label>
+		<input type="radio" id="325" name="32">
+		<label for="325">E班（5班）</label>
+		<input type="radio" id="326" name="32">
+		<label for="326">F班（6班）</label>
+	</div>
+	<h1>3年3組</h1>
+	<div>
+		<input type="radio" id="331" name="33">
+		<label for="331">A班（1班）</label>
+		<input type="radio" id="332" name="33">
+		<label for="332">B班（2班）</label>
+		<input type="radio" id="333" name="33">
+		<label for="333">C班（3班）</label><br>
+		<input type="radio" id="334" name="33">
+		<label for="334">D班（4班）</label>
+		<input type="radio" id="335" name="33">
+		<label for="335">E班（5班）</label>
+		<input type="radio" id="336" name="33">
+		<label for="336">F班（6班）</label>
+	</div><br><br>
+	<button style="width: 50%" onclick="del()">自動保存されているデータの削除</button>
+</body>
+</html>

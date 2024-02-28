@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html style="width: 100%">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ランダム抽選ソフト</title>
+	<style type="text/css">
+		.item{
+			width: 80%;
+			height: 5rem;
+			font-size: 1.5rem;
+			margin: 15px;
+		}
+		.big{
+			font-size: 3rem;
+		}
+	</style>
+	<script type="text/javascript">
+		const kinjyo1=localStorage.getItem("kinjyo_31");
+		const kinjyo2=localStorage.getItem("kinjyo_32");
+		const kinjyo3=localStorage.getItem("kinjyo_33");
+
+		const all_group=["A班（1班）","B班（2班）","C班（3班）","D班（4班）","E班（5班）","F班（6班）"];
+		const rand_all_group=()=>{
+			return all_group[Math.floor(Math.random()*all_group.length)];
+		};
+
+		window.onload=()=>{
+			if(kinjyo1===null || kinjyo2===null || kinjyo3===null){
+				alert("いずれかのクラスのデータが読み込めませんでした。設定画面を開いてください。");
+				document.body.innerHTML="";
+			}
+		}
+
+		function rand(kumi){
+			const result=document.getElementById('result')||document.body;
+			const start=Date.now();
+			const timer=setInterval(()=>{
+				if(Date.now()-start>5*1000){
+					clearInterval(timer);
+					result.innerHTML="<p class='big'>選ばれたのは"+all_group[localStorage.getItem("kinjyo_"+kumi)-1]+"でした</p>"
+				}else{
+					result.innerHTML="<p class='big'>選ばれたのは"+rand_all_group()+"でした</p>"
+				}
+			},100);
+		}
+
+		function load(kumi){
+			document.body.innerHTML=`
+<h1>3年`+kumi.slice(-1)+`組の班の中から、ランダムに1班抽選します</h1>
+<br><br><br>
+<div id="result">
+<button class="item" onclick="rand('`+kumi+`')">ランダムに抽選する</button>
+</div><br><br>
+<a href="javascript:location.reload()">前の画面に戻る</a>
+			`;
+		}
+	</script>
+</head>
+<body style="text-align: center; width: 80%; margin: 0 auto;">
+	<h1>3月5日発表グループ</h1>
+	各クラスのボタンをクリック！<br>
+	<button class="item" onclick="load('31')">3年1組（1班）</button>
+	<button class="item" onclick="load('32')">3年2組（1班）</button>
+	<button class="item" onclick="load('33')">3年3組（1班）</button>
+	<button class="item" style="font-size: 1.3rem;" onclick="alert('当日のお楽しみ！\n(該当班には、授業中に直接、声を掛けます)')">全クラスの中から、先生が優秀だと思う班<br>（該当班には授業中に直接、声を掛けます）</button>
+</body>
+</html>
