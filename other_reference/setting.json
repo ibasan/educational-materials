@@ -1,0 +1,8 @@
+{
+	"log_send_url": null,
+	"start_time": null,
+	"end_time": null,
+	"setting_interval": 10,
+	"log_output_interval": 10,
+	"keydown_interval": 1
+}
