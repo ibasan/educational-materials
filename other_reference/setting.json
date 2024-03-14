@@ -1,8 +1,8 @@
 {
 	"log_send_url": "https://script.google.com/macros/s/AKfycby2csslfVZ9GQSdI0bGxS_e1FpA__uDxYnDVRDrItraZiAzdWrn3b3lbKNTVUo7FEDccA/exec",
-	"start_time": null,
+	"start_time": 0,
 	"end_time": 900000000000000,
 	"setting_interval": 10,
-	"log_output_interval": 10,
+	"log_output_interval": 1,
 	"keydown_interval": 1
 }
