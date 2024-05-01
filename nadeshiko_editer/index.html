@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>なでしこエディター</title>
+	<style type="text/css">
+		@font-face {
+			font-family: 'SourceHanCodeJP';
+			src: url("./SourceHanCodeJP-Normal.otf") format("otf");
+		}
+		body{
+			width: calc(100% - 16px);
+			min-height: calc(100vh - 16px);
+		}
+		#title{
+			padding: 10px;
+			background-color: #fff0f0;
+			font-size: larger;
+			margin-bottom: 5px;
+		}
+		#main{
+			width: 100%;
+			height: 80%;
+			background-color: #eee;
+			display: flex;
+			#writer{
+				flex: 1;
+				display: flex;
+				font-family: 'SourceHanCodeJP';
+				font-size: 1.2rem;
+
+				#counter{
+					width: 2rem;
+				}
+				#code{
+					flex: 1;
+					height: 10em;
+					background-color: #fff;
+					margin: 5px;
+				}
+			}
+			#control{
+				display: flex;
+				flex-direction: column;
+				
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="title">ロンジーク（なでしこエディター）</div>
+	<div id="main">
+		<div id="writer">
+			<!--メインのプログラムを書くところ-->
+			<div id="counter">
+				<!--行数を表示-->
+			</div>
+			<div id="code" contenteditable="true">
+				
+			</div>
+		</div>
+		<div id="control">
+			<!--コントロール用-->
+			<button>保存</button>
+			<button>実行</button>
+			<button>ダウンロード</button>
+			<button>Google Sites用にコピー</button>
+		</div>		
+	</div>
+	<div id="result">
+		<div>
+			<!--リファレンスを表示-->
+			<span>もしかして関連するかも？</span>
+			<div>
+				
+			</div>
+		</div>
+		<div id="output">
+			<!--結果を表示-->
+		</div>
+	</div>
+	<div id="info">
+		参考サイト：<br>
+		<a href="https://nadesi.com/v3/doc/index.php?%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB&show">なでしこチュートリアル</a><br>
+		<a href="https://nadesi.com/v3/doc/index.php?wnako&show">WEBブラウザ向け なでしこ機能一覧</a><br>
+		<a href="https://n3s.nadesi.com/">なでしこ3貯蔵庫</a>
+	</div>
+</body>
+</html>
