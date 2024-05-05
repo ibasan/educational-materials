@@ -5,9 +5,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>なでしこエディター</title>
 	<style type="text/css">
-		@font-face {
+		@font-face{
 			font-family: 'SourceHanCodeJP';
-			src: url("./SourceHanCodeJP-Normal.otf") format("otf");
+			src: url("./SourceHanCodeJP-Normal.otf") format("opentype");
+		}
+		@font-face{
+			font-family: 'logotype.otf';
+			src: url("./logotype.otf") format("opentype");
 		}
 		body{
 			width: calc(100% - 16px);
@@ -16,13 +20,14 @@
 		#title{
 			padding: 10px;
 			background-color: #fff0f0;
-			font-size: larger;
-			margin-bottom: 5px;
+			font-family: "logotype.otf";
+			font-size: 1.5rem;
+			margin-bottom: 8px;
 		}
 		#main{
 			width: 100%;
 			height: 80%;
-			background-color: #eee;
+			background-color: #999;
 			display: flex;
 			#writer{
 				flex: 1;
@@ -30,55 +35,236 @@
 				font-family: 'SourceHanCodeJP';
 				font-size: 1.2rem;
 
-				#counter{
-					width: 2rem;
-				}
 				#code{
 					flex: 1;
-					height: 10em;
+					min-height: calc(100% - 20px);
+					height: fit-content;
 					background-color: #fff;
 					margin: 5px;
+					padding: 5px;
+					line-height: 1.3em;
+					counter-reset: line-number;
+					white-space: pre-wrap;
+					word-break: break-all;
+
+					div{
+						counter-increment: line-number;
+						display: list-item;
+						padding-left: 1rem;
+						margin-left: 1rem;
+					}
+					div::marker{
+						content: counter(line-number);
+						color: #999;
+						font-size: medium;
+					}
 				}
 			}
 			#control{
 				display: flex;
 				flex-direction: column;
-				
+				justify-content: flex-start;
+				margin-right: 5px;
+				margin-top: 2px;
+
+				position: sticky;
+				top: 10px;
+				height: fit-content;
+
+				button{
+					transition-duration: 0.3s;
+					&:disabled{
+						color: #fff;
+						cursor:not-allowed;
+						transition-duration: 0.3s;
+					}
+					&:hover:not[disabled]{
+						background-color: #8cfbfb;
+					}
+				}
+
+				.control_button{
+					height: calc(10em * 0.3);
+					margin: 3px 0;
+				}
+				#fontsize{
+					display: flex;
+					justify-content: space-evenly;
+
+					> button{
+						font-size: 1.1em;
+						width: calc(10em * 0.3);;
+					}
+				}
+			}
+		}
+		#result{
+			#output{
+				margin: 5px 0;
+
+				> *{
+					display: none;
+				}
+
+				#error{
+					padding: 10px 0;
+					background-color: #f5ff80;
+				}
+
+				#text_output{
+					padding: 10px 0;
+					background-color: #e6ffe5;
+				}
+			}
+			#reference{
+				min-height: 30px;
 			}
 		}
 	</style>
+	<script type="text/javascript" src="./load.js"></script>
+	<script type="text/javascript" src="./wnako3.js"></script>
+	<script type="text/javascript">
+		window.addEventListener("load", ()=>{
+			const control_button_dis=(target, new_text)=>{
+				const old_text=target.textContent;
+				target.textContent=new_text;
+				target.disabled=true;
+				setTimeout(()=>{
+					target.textContent=old_text;
+					target.disabled=false;
+				}, 5*1000);
+			};
+			const code_selection=data=>{
+				const selection=window.getSelection();
+				if(!selection || !selection.rangeCount) return;
+				selection.deleteFromDocument();
+				const range=selection.getRangeAt(0);
+				range.insertNode(document.createTextNode(data));
+				range.setStart(range.endContainer, range.endOffset)
+				code.normalize();
+			};
+			const code_getText=()=>{
+				let code_innerText="";
+				Array.from(code.children).forEach(e=>{
+					code_innerText+=e.innerText.replace(/\n$/,"")+"\n";
+				});
+				return code_innerText;
+			};
+			const unload=(event)=>{
+				event.preventDefault();
+				event.returnValue="";
+			};
+			
+			
+			window.addEventListener("keydown", event=>{
+				if (event.ctrlKey && event.key==='s') {
+					event.preventDefault();
+					save.click();
+				}
+			});
+			code.addEventListener("keydown", event=>{
+				if(code.childElementCount==1 && event.key=="Backspace"){
+					if(code.children[0].innerText.length==1){
+						code.children[0].innerText="\n";
+					}
+					if(code.innerText=="" || code.innerText=="\n"){
+						event.preventDefault();
+						return;
+					}
+				}else if(event.key=="Tab"){
+					event.preventDefault();
+					code_selection("　　");
+				}
+				window.addEventListener("beforeunload", unload);
+			});
+			code.addEventListener("paste", event=>{
+				event.preventDefault();
+				const node_spliter="【DO NOT EDIT】この文字が表示された場合は、管理者にご連絡ください【LONGIC:"+Date.now()+"】";
+				const data=event.clipboardData.getData("text/plain").replace(/\r\n|\n|\r/gu, node_spliter);
+				code_selection(data);
+				code.innerHTML=code.innerHTML.replaceAll(node_spliter, "</div><div>");
+			});
+
+			fontsize_plus.addEventListener("click", ()=>{
+				code.style.fontSize=(code.style.fontSize||"1em").slice(0,-2)-0+0.1+"em";
+				localStorage.setItem('LONGIC_fontsize', code.style.fontSize);
+			});
+			fontsize_minus.addEventListener("click", ()=>{
+				code.style.fontSize=(code.style.fontSize||"1em").slice(0,-2)-0.1+"em";
+				localStorage.setItem('LONGIC_fontsize', code.style.fontSize);
+			});
+			clear.addEventListener("click", ()=>{
+				result_clear();
+			});
+			copy.addEventListener("click", ()=>{
+				navigator.clipboard.writeText(code_getText());
+				control_button_dis(copy, "コピーしました！");
+			});
+			save.addEventListener("click", ()=>{
+				localStorage.setItem('LONGIC_save', code.innerHTML);
+				window.removeEventListener("beforeunload", unload);
+				control_button_dis(save, "保存しました");
+			});
+			download.addEventListener("click", ()=>{
+				const blob=new Blob([code_getText()], {"type":"text/plain"});
+				const aTag=document.createElement('a');
+				aTag.href=URL.createObjectURL(blob);
+				aTag.target='_blank';
+				aTag.download="なでしこ"+(new Date().toISOString().slice(0,10))+".txt";
+				aTag.click();
+				URL.revokeObjectURL(aTag.href);
+			});
+			run.addEventListener("click", ()=>{
+				nako3_run(code.innerText);
+			});
+			google_copy.addEventListener("click", ()=>{
+				//todo
+				navigator.clipboard.writeText(code_getText());
+				control_button_dis(copy, "コピーしました！");
+			});
+
+			code.innerHTML=localStorage.getItem("LONGIC_save")||"<div><br></div>";
+			code.style.fontSize=localStorage.getItem("LONGIC_fontsize")||"1em";
+		});
+	</script>
 </head>
 <body>
-	<div id="title">ロンジーク（なでしこエディター）</div>
+	<div id="title">LONGIC（なでしこエディター）</div>
 	<div id="main">
 		<div id="writer">
 			<!--メインのプログラムを書くところ-->
-			<div id="counter">
-				<!--行数を表示-->
-			</div>
 			<div id="code" contenteditable="true">
-				
+				<div></div>
 			</div>
 		</div>
 		<div id="control">
 			<!--コントロール用-->
-			<button>保存</button>
-			<button>実行</button>
-			<button>ダウンロード</button>
-			<button>Google Sites用にコピー</button>
-		</div>		
+			<button id="save" class="control_button">保存</button>
+			<button id="run" class="control_button">実行</button>
+			<button id="clear" class="control_button">結果をクリア</button>
+			<button id="download" class="control_button">ダウンロード</button>
+			<button id="copy" class="control_button">プログラムのみコピー</button>
+			<button id="google_copy" class="control_button">Google Sites用にコピー</button>
+			<div id="fontsize" class="control_button">
+				<button id="fontsize_plus">＋</button>
+				<button id="fontsize_minus">－</button>
+			</div>
+		</div>
 	</div>
 	<div id="result">
+		<div id="output">
+			<!--結果を表示-->
+			<div id="error"></div>
+			<div id="text_output"></div>
+			<div id="result_div"></div>
+			<canvas id="result_canvas" width="500" height="400"></canvas>
+		</div>
 		<div>
 			<!--リファレンスを表示-->
 			<span>もしかして関連するかも？</span>
-			<div>
-				
-			</div>
+			<div id="reference"></div>
 		</div>
-		<div id="output">
-			<!--結果を表示-->
-		</div>
+		
 	</div>
 	<div id="info">
 		参考サイト：<br>
