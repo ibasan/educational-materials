@@ -1,5 +1,6 @@
 let template_html;
-let template_canvas
+let template_canvas;
+let autorun_code;
 const result_clear=()=>{
 	output.innerHTML=template_html;
 };
@@ -49,8 +50,13 @@ window.addEventListener("load", ()=>{
 					error.innerHTML=e.html;
 				}
 			});
+
+			//autorun
+			if(autorun_code!=""){
+				nako3_run(autorun_code);
+			}
 		}
-	}, 300);
+	}, 100);
 
 	const result_change_checker=setInterval(()=>{
 		Array.from(output.children).forEach(e=>{
