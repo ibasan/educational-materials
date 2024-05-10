@@ -18,7 +18,7 @@ const nako3_run=main=>{
 	//DOMのリセットの時間、待つ
 	setTimeout(async ()=>{
 		await navigator.nako3.loadDependencies(addon+main, "main.nako3", addon);
-		await navigator.nako3.run(addon+main, "main.nako3", addon);				
+		await navigator.nako3.run(addon+main, "main.nako3", addon);
 	}, 100);
 }
 
@@ -29,18 +29,11 @@ window.addEventListener("load", ()=>{
 	const nako3_init_timer=setInterval(()=>{
 		if(navigator.nako3){
 			clearInterval(nako3_init_timer);
-			//「表示」出力先変更
-			navigator.nako3.setFunc("表示", [['と', 'を']], function (s) {
-				text_output.innerHTML+=(s.replace('&', '&amp;')
-					.replace('>', '&gt;')
-					.replace('<', '&lt;')
-					.replace('\n', '<br>'))+"<br>";
-			}, true);
 
 			//「表示ログクリア」の動作を変更
 			navigator.nako3.setFunc("表示ログクリア", [], result_clear, true);
 
-			//エラー出力時の動作を変更
+			//「表示」出力先、エラー出力時の動作を変更
 			navigator.nako3.logger.addListener('trace', (e) => {
 				if(e.level==='stdout') {
 					text_output.innerHTML+=e.noColor+"<br>";
@@ -52,15 +45,15 @@ window.addEventListener("load", ()=>{
 			});
 
 			//autorun
-			if(autorun_code!=""){
+			if(autorun_code){
 				nako3_run(autorun_code);
 			}
 		}
 	}, 100);
 
-	const result_change_checker=setInterval(()=>{
+	const output_change_checker=setInterval(()=>{
 		Array.from(output.children).forEach(e=>{
-			if(e.style.display==""){
+			if(e.style.display!="block"){
 				if(e.tagName=="DIV"){
 					if(e.innerHTML!=""){
 						e.style.display="block";
@@ -72,9 +65,6 @@ window.addEventListener("load", ()=>{
 				}
 			}
 		});
-
-		//todo:リファレンス検索
-
 	}, 300);
 });
 

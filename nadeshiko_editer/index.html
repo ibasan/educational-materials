@@ -47,6 +47,10 @@
 					white-space: pre-wrap;
 					word-break: break-all;
 
+					.under{
+						text-decoration: underline;
+					}
+
 					div{
 						counter-increment: line-number;
 						display: list-item;
@@ -121,9 +125,26 @@
 			}
 		}
 	</style>
+	<!--wnako3を読み込み-->
+	<script type="text/javascript" src="./wnako3/wnako3.js"></script>
+	<script type="text/javascript" src="./wnako3/plugin_caniuse.js"></script>
+	<script type="text/javascript" src="./wnako3/plugin_kansuji.js"></script>
+	<script type="text/javascript" src="./wnako3/plugin_markup.js"></script>
+	<script type="text/javascript" src="./wnako3/plugin_turtle.js"></script>
+	<script type="text/javascript" src="./wnako3/plugin_webworker.js"></script>
+
 	<script type="text/javascript" src="./load.js"></script>
-	<script type="text/javascript" src="./wnako3.js"></script>
+	<script type="text/javascript" src="./google_copy.js"></script>
+	<script type="text/javascript" src="./wnako3_reference.js"></script>
 	<script type="text/javascript">
+		let replace_flag=true;
+		const code_getText=()=>{
+			let code_innerText="";
+			Array.from(code.children).forEach(e=>{
+				code_innerText+=e.innerText.replace(/\n$/,"")+"\n";
+			});
+			return code_innerText;
+		};
 		window.addEventListener("load", ()=>{
 			const control_button_dis=(target, new_text)=>{
 				const old_text=target.textContent;
@@ -140,21 +161,35 @@
 				selection.deleteFromDocument();
 				const range=selection.getRangeAt(0);
 				range.insertNode(document.createTextNode(data));
-				range.setStart(range.endContainer, range.endOffset)
-				code.normalize();
-			};
-			const code_getText=()=>{
-				let code_innerText="";
-				Array.from(code.children).forEach(e=>{
-					code_innerText+=e.innerText.replace(/\n$/,"")+"\n";
+				/*
+				let node_add_flag=false;
+				code.childNodes.forEach(node=>{
+					if(node==range.endContainer || node_add_flag){
+						node_add_flag=true;
+						Array.from(a.endContainer.childNodes).slice(a.endOffset).forEach(e=>{
+							console.log(e.nodeValue);
+						});
+					}
 				});
-				return code_innerText;
+				*/
+
+				code.normalize();
 			};
 			const unload=(event)=>{
 				event.preventDefault();
 				event.returnValue="";
 			};
-			
+
+			//todo:リファレンス検索
+			const reference_search=setInterval(()=>{
+				if(false&&replace_flag){
+					let now_code=code.innerHTML;
+					Object.keys(wnako3_reference).forEach(key=>{
+						const index=now_code.replaceAll(new RegExp(("/?<!<span class='under'>")+key, "g"), "<span class='under'>"+key+"</span>");
+					});
+					code.innerHTML=now_code;
+				}
+			}, 1000000);
 			
 			window.addEventListener("keydown", event=>{
 				if (event.ctrlKey && event.key==='s') {
@@ -162,8 +197,10 @@
 					save.click();
 				}
 			});
+			code.addEventListener('compositionstart', ()=>{replace_flag=false;});
+			code.addEventListener('compositionend', ()=>{replace_flag=true;});
 			code.addEventListener("keydown", event=>{
-				if(code.childElementCount==1 && event.key=="Backspace"){
+				if(code.childElementCount==1 && (event.key=="Backspace" || event.key=="Delete")){
 					if(code.children[0].innerText.length==1){
 						code.children[0].innerText="\n";
 					}
@@ -218,11 +255,8 @@
 				nako3_run(code.innerText);
 			});
 			google_copy.addEventListener("click", ()=>{
-				//todo
-				const data="<html><body><div id='output'><div id='error'></div><div id='text_output'></div><div id='result_div'></div><canvas id='result_canvas' width='500' height='400'></canvas></div><script type='text/javascript' src='https://github.kasumigaura.work/nadeshiko_editer/load.js'></script><script type='text/javascript' src='https://github.kasumigaura.work/nadeshiko_editer/wnako3.js'></script><script>window.addEventListener("load", ()=>{const loader=setTimeout(()=>{nako3_run('"+code_getText()+"');}, 1000);});</script></body></html>";
-
-				navigator.clipboard.writeText(code_getText());
-				control_button_dis(copy, "コピーしました！");
+				navigator.clipboard.writeText(get_googlesite_copy());
+				control_button_dis(google_copy, "コピーしました！");
 			});
 
 			code.innerHTML=localStorage.getItem("LONGIC_save")||"<div><br></div>";
