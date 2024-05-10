@@ -172,7 +172,7 @@
 					}
 				});
 				*/
-
+				range.setStart(range.endContainer, range.endOffset);
 				code.normalize();
 			};
 			const unload=(event)=>{
@@ -252,6 +252,11 @@
 				URL.revokeObjectURL(aTag.href);
 			});
 			run.addEventListener("click", ()=>{
+				//自動保存
+				localStorage.setItem('LONGIC_save', code.innerHTML);
+				window.removeEventListener("beforeunload", unload);
+
+				//実行
 				nako3_run(code.innerText);
 			});
 			google_copy.addEventListener("click", ()=>{
