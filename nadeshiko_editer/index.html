@@ -122,6 +122,24 @@
 			}
 			#reference{
 				min-height: 30px;
+				margin-bottom: 15px;
+				display: flex;
+
+
+				.click_div{
+					width: 10vw;
+					height: 10vw;
+					background-color: #ccc;
+					border-radius: 5px;
+					margin: 3px;
+
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					cursor: pointer;
+					flex-wrap: wrap;
+				}
 			}
 		}
 	</style>
@@ -133,11 +151,14 @@
 	<script type="text/javascript" src="./wnako3/plugin_turtle.js"></script>
 	<script type="text/javascript" src="./wnako3/plugin_webworker.js"></script>
 
+	<script type="text/javascript" src="./lodash.min.js"></script>
 	<script type="text/javascript" src="./load.js"></script>
 	<script type="text/javascript" src="./google_copy.js"></script>
 	<script type="text/javascript" src="./wnako3_reference.js"></script>
 	<script type="text/javascript">
 		let replace_flag=true;
+		let old_find_key={};
+
 		const code_getText=()=>{
 			let code_innerText="";
 			Array.from(code.children).forEach(e=>{
@@ -155,41 +176,69 @@
 					target.disabled=false;
 				}, 5*1000);
 			};
-			const code_selection=data=>{
+			const code_insert=data=>{
+				//挿入処理
+				const node_spliter="【DO NOT EDIT】この文字が表示された場合は、管理者にご連絡ください【LONGIC】";
+				const split_data=data.replace(/\r\n|\n|\r/gu, node_spliter);
 				const selection=window.getSelection();
 				if(!selection || !selection.rangeCount) return;
 				selection.deleteFromDocument();
 				const range=selection.getRangeAt(0);
-				range.insertNode(document.createTextNode(data));
-				/*
+				range.insertNode(document.createTextNode(split_data));
+
+				//カーソルの現時点の位置を取得
 				let node_add_flag=false;
+				let node_after_counter=1;
+				let now_node_after_counter=0;
 				code.childNodes.forEach(node=>{
-					if(node==range.endContainer || node_add_flag){
+					if(node_add_flag){
+						node_after_counter++;
+					}else if(node==range.endContainer){
 						node_add_flag=true;
-						Array.from(a.endContainer.childNodes).slice(a.endOffset).forEach(e=>{
-							console.log(e.nodeValue);
+						Array.from(range.endContainer.childNodes).slice(range.endOffset).forEach(e=>{
+							now_node_after_counter+=e.length||0;
 						});
 					}
 				});
-				*/
-				range.setStart(range.endContainer, range.endOffset);
-				code.normalize();
+
+				//改行を置き換え
+				code.innerHTML=code.innerHTML.replaceAll(node_spliter, "</div><div>");
+
+				//カーソルの位置を戻す
+				const code_children=code.childNodes;
+				const target_node=code_children[code_children.length - node_after_counter].childNodes[0];
+				range.setStart(target_node, target_node.length - now_node_after_counter);
+				range.setEnd(target_node, target_node.length - now_node_after_counter);
+
 			};
+
 			const unload=(event)=>{
 				event.preventDefault();
 				event.returnValue="";
 			};
 
-			//todo:リファレンス検索
-			const reference_search=setInterval(()=>{
-				if(false&&replace_flag){
-					let now_code=code.innerHTML;
-					Object.keys(wnako3_reference).forEach(key=>{
-						const index=now_code.replaceAll(new RegExp(("/?<!<span class='under'>")+key, "g"), "<span class='under'>"+key+"</span>");
-					});
-					code.innerHTML=now_code;
+			const code_settings=setInterval(()=>{
+				//すべて消えてしまった時用の復元処理
+				if(code.getElementsByTagName("div").length==0){
+					code.innerHTML="<div></div>";
 				}
-			}, 1000000);
+
+				//リファレンス検索
+				const now_code=code.innerHTML;
+				const find_key=Object.keys(wnako3_reference).filter(key=>now_code.indexOf(key)!=-1);
+
+				if(!_.isEqual(old_find_key, find_key)){
+					old_find_key=find_key;
+					reference.innerHTML="";
+					find_key.forEach(key=>{
+						const click_div=reference.appendChild(document.createElement("div"));
+						click_div.textContent=key;
+						click_div.onclick=()=>{window.open(wnako3_reference[key]);}
+						click_div.classList.add("click_div");
+					});
+				}
+
+			}, 100);
 			
 			window.addEventListener("keydown", event=>{
 				if (event.ctrlKey && event.key==='s') {
@@ -210,16 +259,13 @@
 					}
 				}else if(event.key=="Tab"){
 					event.preventDefault();
-					code_selection("　　");
+					code_insert("　　");
 				}
 				window.addEventListener("beforeunload", unload);
 			});
 			code.addEventListener("paste", event=>{
 				event.preventDefault();
-				const node_spliter="【DO NOT EDIT】この文字が表示された場合は、管理者にご連絡ください【LONGIC:"+Date.now()+"】";
-				const data=event.clipboardData.getData("text/plain").replace(/\r\n|\n|\r/gu, node_spliter);
-				code_selection(data);
-				code.innerHTML=code.innerHTML.replaceAll(node_spliter, "</div><div>");
+				code_insert(event.clipboardData.getData("text/plain"));
 			});
 
 			fontsize_plus.addEventListener("click", ()=>{
