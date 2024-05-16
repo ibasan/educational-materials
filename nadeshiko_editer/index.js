@@ -98,7 +98,7 @@ window.addEventListener("load", ()=>{
 		if(event.ctrlKey && event.key==='s') {
 			event.preventDefault();
 			save.click();
-		}else if(event.ctrlKey && event.key==='s') {
+		}else if(event.ctrlKey && event.key==='r') {
 			event.preventDefault();
 			run.click();
 		}
