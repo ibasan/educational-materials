@@ -26,6 +26,23 @@ window.addEventListener("load", ()=>{
 	template_html=output.innerHTML;
 	template_canvas=result_canvas.toDataURL();
 
+	//wnakoの読み込み
+	let script=document.head.appendChild(document.createElement('script'));
+	script.src="https://github.kasumigaura.work/nadeshiko_editer/wnako3/wnako3.js";
+	script.onload=()=>{
+		[
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_caniuse.js",
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_kansuji.js",
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_markup.js",
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_turtle.js",
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_webworker.js"
+		].forEach(wnako_plugin_url=>{
+			let plugin_script=document.head.appendChild(document.createElement('script'));
+			plugin_script.src=wnako_plugin_url;
+		});
+	}
+
+
 	const nako3_init_timer=setInterval(()=>{
 		if(navigator.nako3){
 			clearInterval(nako3_init_timer);

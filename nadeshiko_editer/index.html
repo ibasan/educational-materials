@@ -4,316 +4,19 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>なでしこエディター</title>
-	<style type="text/css">
-		@font-face{
-			font-family: 'SourceHanCodeJP';
-			src: url("./SourceHanCodeJP-Normal.otf") format("opentype");
-		}
-		@font-face{
-			font-family: 'logotype.otf';
-			src: url("./logotype.otf") format("opentype");
-		}
-		body{
-			width: calc(100% - 16px);
-			min-height: calc(100vh - 16px);
-		}
-		#title{
-			padding: 10px;
-			background-color: #fff0f0;
-			font-family: "logotype.otf";
-			font-size: 1.5rem;
-			margin-bottom: 8px;
-		}
-		#main{
-			width: 100%;
-			height: 80%;
-			background-color: #999;
-			display: flex;
-			#writer{
-				flex: 1;
-				display: flex;
-				font-family: 'SourceHanCodeJP';
-				font-size: 1.2rem;
+	<link rel="stylesheet" href="./index.css">
 
-				#code{
-					flex: 1;
-					min-height: calc(100% - 20px);
-					height: fit-content;
-					background-color: #fff;
-					margin: 5px;
-					padding: 5px;
-					line-height: 1.3em;
-					counter-reset: line-number;
-					white-space: pre-wrap;
-					word-break: break-all;
-
-					.under{
-						text-decoration: underline;
-					}
-
-					div{
-						counter-increment: line-number;
-						display: list-item;
-						padding-left: 1rem;
-						margin-left: 1rem;
-					}
-					div::marker{
-						content: counter(line-number);
-						color: #999;
-						font-size: medium;
-					}
-				}
-			}
-			#control{
-				display: flex;
-				flex-direction: column;
-				justify-content: flex-start;
-				margin-right: 5px;
-				margin-top: 2px;
-
-				position: sticky;
-				top: 10px;
-				height: fit-content;
-
-				button{
-					transition-duration: 0.3s;
-					&:disabled{
-						color: #fff;
-						cursor:not-allowed;
-						transition-duration: 0.3s;
-					}
-					&:hover:not[disabled]{
-						background-color: #8cfbfb;
-					}
-				}
-
-				.control_button{
-					height: calc(10em * 0.3);
-					margin: 3px 0;
-				}
-				#fontsize{
-					display: flex;
-					justify-content: space-evenly;
-
-					> button{
-						font-size: 1.1em;
-						width: calc(10em * 0.3);;
-					}
-				}
-			}
-		}
-		#result{
-			#output{
-				margin: 5px 0;
-
-				> *{
-					display: none;
-				}
-
-				#error{
-					padding: 10px 0;
-					background-color: #f5ff80;
-				}
-
-				#text_output{
-					padding: 10px 0;
-					background-color: #e6ffe5;
-				}
-			}
-			#reference{
-				min-height: 30px;
-				margin-bottom: 15px;
-				display: flex;
-				flex-wrap: wrap;
-
-				.click_div{
-					width: 10vw;
-					height: 10vw;
-					background-color: #ccc;
-					border-radius: 5px;
-					margin: 3px;
-
-					display: flex;
-					align-items: center;
-					justify-content: center;
-
-					cursor: pointer;
-					
-				}
-			}
-		}
-	</style>
-	<!--wnako3を読み込み-->
-	<script type="text/javascript" src="./wnako3/wnako3.js"></script>
-	<script type="text/javascript" src="./wnako3/plugin_caniuse.js"></script>
-	<script type="text/javascript" src="./wnako3/plugin_kansuji.js"></script>
-	<script type="text/javascript" src="./wnako3/plugin_markup.js"></script>
-	<script type="text/javascript" src="./wnako3/plugin_turtle.js"></script>
-	<script type="text/javascript" src="./wnako3/plugin_webworker.js"></script>
+	<!--地図読み込み-->
+	<link rel="stylesheet" href="./leaflet/leaflet.css">
+	<script src="./leaflet/leaflet.js"></script>
 
 	<script type="text/javascript" src="./lodash.min.js"></script>
 	<script type="text/javascript" src="./load.js"></script>
 	<script type="text/javascript" src="./google_copy.js"></script>
 	<script type="text/javascript" src="./wnako3_reference.js"></script>
-	<script type="text/javascript">
-		let replace_flag=true;
-		let old_find_key={};
-
-		const code_getText=()=>{
-			let code_innerText="";
-			Array.from(code.children).forEach(e=>{
-				code_innerText+=e.innerText.replace(/\n$/,"")+"\n";
-			});
-			return code_innerText;
-		};
-		window.addEventListener("load", ()=>{
-			const control_button_dis=(target, new_text)=>{
-				const old_text=target.textContent;
-				target.textContent=new_text;
-				target.disabled=true;
-				setTimeout(()=>{
-					target.textContent=old_text;
-					target.disabled=false;
-				}, 5*1000);
-			};
-			const code_insert=data=>{
-				//挿入処理
-				const node_spliter="【DO NOT EDIT】この文字が表示された場合は、管理者にご連絡ください【LONGIC】";
-				const split_data=data.replace(/\r\n|\n|\r/gu, node_spliter);
-				const selection=window.getSelection();
-				if(!selection || !selection.rangeCount) return;
-				selection.deleteFromDocument();
-				const range=selection.getRangeAt(0);
-				range.insertNode(document.createTextNode(split_data));
-
-				//カーソルの現時点の位置を取得
-				let node_add_flag=false;
-				let node_after_counter=1;
-				let now_node_after_counter=0;
-				code.childNodes.forEach(node=>{
-					if(node_add_flag){
-						node_after_counter++;
-					}else if(node==range.endContainer){
-						node_add_flag=true;
-						Array.from(range.endContainer.childNodes).slice(range.endOffset).forEach(e=>{
-							now_node_after_counter+=e.length||0;
-						});
-					}
-				});
-
-				//改行を置き換え
-				code.innerHTML=code.innerHTML.replaceAll(node_spliter, "</div><div>");
-
-				//カーソルの位置を戻す
-				const code_children=code.childNodes;
-				const target_node=code_children[code_children.length - node_after_counter].childNodes[0];
-				range.setStart(target_node, target_node.length - now_node_after_counter);
-				range.setEnd(target_node, target_node.length - now_node_after_counter);
-
-			};
-
-			const unload=(event)=>{
-				event.preventDefault();
-				event.returnValue="";
-			};
-
-			const code_settings=setInterval(()=>{
-				//すべて消えてしまった時用の復元処理
-				if(code.getElementsByTagName("div").length==0){
-					code.innerHTML="<div></div>";
-				}
-
-				//リファレンス検索
-				const now_code=code.innerHTML;
-				const find_key=Object.keys(wnako3_reference).filter(key=>now_code.indexOf(key)!=-1);
-
-				if(!_.isEqual(old_find_key, find_key)){
-					old_find_key=find_key;
-					reference.innerHTML="";
-					find_key.forEach(key=>{
-						const click_div=reference.appendChild(document.createElement("div"));
-						click_div.textContent=key;
-						click_div.onclick=()=>{window.open(wnako3_reference[key]);}
-						click_div.classList.add("click_div");
-					});
-				}
-
-			}, 100);
-			
-			window.addEventListener("keydown", event=>{
-				if (event.ctrlKey && event.key==='s') {
-					event.preventDefault();
-					save.click();
-				}
-			});
-			code.addEventListener('compositionstart', ()=>{replace_flag=false;});
-			code.addEventListener('compositionend', ()=>{replace_flag=true;});
-			code.addEventListener("keydown", event=>{
-				if(code.childElementCount==1 && (event.key=="Backspace" || event.key=="Delete")){
-					if(code.children[0].innerText.length==1){
-						code.children[0].innerText="\n";
-					}
-					if(code.innerText=="" || code.innerText=="\n"){
-						event.preventDefault();
-						return;
-					}
-				}else if(event.key=="Tab"){
-					event.preventDefault();
-					code_insert("　　");
-				}
-				window.addEventListener("beforeunload", unload);
-			});
-			code.addEventListener("paste", event=>{
-				event.preventDefault();
-				code_insert(event.clipboardData.getData("text/plain"));
-			});
-
-			fontsize_plus.addEventListener("click", ()=>{
-				code.style.fontSize=(code.style.fontSize||"1em").slice(0,-2)-0+0.1+"em";
-				localStorage.setItem('LONGIC_fontsize', code.style.fontSize);
-			});
-			fontsize_minus.addEventListener("click", ()=>{
-				code.style.fontSize=(code.style.fontSize||"1em").slice(0,-2)-0.1+"em";
-				localStorage.setItem('LONGIC_fontsize', code.style.fontSize);
-			});
-			clear.addEventListener("click", ()=>{
-				result_clear();
-			});
-			copy.addEventListener("click", ()=>{
-				navigator.clipboard.writeText(code_getText());
-				control_button_dis(copy, "コピーしました！");
-			});
-			save.addEventListener("click", ()=>{
-				localStorage.setItem('LONGIC_save', code.innerHTML);
-				window.removeEventListener("beforeunload", unload);
-				control_button_dis(save, "保存しました");
-			});
-			download.addEventListener("click", ()=>{
-				const blob=new Blob([code_getText()], {"type":"text/plain"});
-				const aTag=document.createElement('a');
-				aTag.href=URL.createObjectURL(blob);
-				aTag.target='_blank';
-				aTag.download="なでしこ"+(new Date().toISOString().slice(0,10))+".txt";
-				aTag.click();
-				URL.revokeObjectURL(aTag.href);
-			});
-			run.addEventListener("click", ()=>{
-				//自動保存
-				localStorage.setItem('LONGIC_save', code.innerHTML);
-				window.removeEventListener("beforeunload", unload);
-
-				//実行
-				nako3_run(code.innerText);
-			});
-			google_copy.addEventListener("click", ()=>{
-				navigator.clipboard.writeText(get_googlesite_copy());
-				control_button_dis(google_copy, "コピーしました！");
-			});
-
-			code.innerHTML=localStorage.getItem("LONGIC_save")||"<div><br></div>";
-			code.style.fontSize=localStorage.getItem("LONGIC_fontsize")||"1em";
-		});
-	</script>
+	<script type="text/javascript" src="./api_url.js"></script>
+	<script type="text/javascript" src="./index.js"></script>
+	<script type="text/javascript" src="./easter.js"></script>
 </head>
 <body>
 	<div id="title">LONGIC（なでしこエディター）</div>
@@ -326,12 +29,14 @@
 		</div>
 		<div id="control">
 			<!--コントロール用-->
+			<button id="run" class="control_button" style="background-color: aquamarine;">実行</button>
 			<button id="save" class="control_button">保存</button>
-			<button id="run" class="control_button">実行</button>
+			<button id="auto_push" class="control_button" style="background-color: #ff848e;">プログラムの自動挿入</button>
 			<button id="clear" class="control_button">結果をクリア</button>
+			<button id="code_clear" class="control_button">プログラムを削除</button>
 			<button id="download" class="control_button">ダウンロード</button>
-			<button id="copy" class="control_button">プログラムのみコピー</button>
-			<button id="google_copy" class="control_button">Google Sites用にコピー</button>
+			<button id="copy" class="control_button" style="background-color: #F29F05;">プログラムのみコピー</button>
+			<button id="google_copy" class="control_button" style="background-color: rgb(99, 122, 251); color: white;">Google Sites用にコピー</button>
 			<div id="fontsize" class="control_button">
 				<button id="fontsize_plus">＋</button>
 				<button id="fontsize_minus">－</button>
@@ -359,5 +64,112 @@
 		<a href="https://nadesi.com/v3/doc/index.php?wnako&show">WEBブラウザ向け なでしこ機能一覧</a><br>
 		<a href="https://n3s.nadesi.com/">なでしこ3貯蔵庫</a>
 	</div>
+	<dialog id="message_dialog">
+		<div id="message_dialog_inner">
+			<!--Google site用にコピーした場合-->
+			<div class="dialog_item" id="google_copy_dialog">
+				<h2>以下のコードをコピーしました</h2>
+				<pre><code id="copy_code"></code></pre>
+			</div>
+
+			<!--コードの自動挿入を押した場合-->
+			<div class="dialog_item" id="code_auto_push_list_dialog">
+				<div id="code_auto_push_list_dialog_inner">
+					<button class="api_push" id="send_mail_auto_push">メールの送信</button>
+					<button class="api_push" id="weather_auto_push">気象情報取得</button>
+					<button class="api_push" id="spreadsheets_auto_push">スプレッドシート読み書き</button>
+					<button class="api_push" id="chat_auto_push">掲示板(スプレッドシート中級)</button>
+				</div>
+			</div>
+			<div class="dialog_item" id="spreadsheets_auto_push_dialog">
+				<div>
+					対象スプレッドシートのURL：
+					<input type="text" id="target_spreadsheets_url" class="url_input" placeholder="https://docs.google.com/spreadsheets/d/◯◯◯◯◯◯◯◯◯/edit#gid=0">
+				</div>
+				<div>対象とするセル番号：<input type="text" id="target_cell" placeholder="A1"></div>
+				<br>
+				<span class="ema">※「技術BOT」アカウントに読み込み/書き込み権限がないと正常に動作しません※</span>
+				<div id="spreadsheets_auto_push_ok">
+					<button class="api_push" id="incert_read_spreadsheets">上記セルを読むコードを挿入</button>
+					<button class="api_push" id="incert_write_spreadsheets">上記セルに書き込むコードを挿入</button>
+				</div>
+			</div>
+			<div class="dialog_item" id="bulletin_auto_push_dialog">
+				<div>
+					<span class="bulletin_message">掲示板(スプレッドシート)のURL：</span>
+					<input type="text" id="target_bulletin_url" class="url_input" placeholder="https://docs.google.com/spreadsheets/d/◯◯◯◯◯◯◯◯◯/edit#gid=0">
+				</div>
+				<div>
+					<span class="bulletin_message">書き込む / 読み込み：</span>
+					<select id="bulletin_type">
+							<option value="read:1">最新1件のデータを読み込む</option>
+							<option value="read:5">最新5件のデータを読み込む</option>
+							<option value="read:all">すべてのデータを読み込む</option>
+							<option value="write">データを書き込む</option>
+					</select>
+				</div>
+				<div id="bulletin_data_div">
+					<span class="bulletin_message">書き込む内容：</span>
+					<input type="text" id="bulletin_data">
+				</div>
+				<div id="incert_bulletin_ok">
+					<span class="ema">※「技術BOT」アカウントに読み込み/書き込み権限がないと正常に動作しません※</span>
+					<button class="api_push" id="incert_bulletin">上記設定でコードを挿入</button>
+				</div>
+			</div>
+			<div class="dialog_item" id="weather_auto_push_dialog">
+				<h3>クリックしてピンを設定</h3>
+				<div id="pin_map"></div>
+				<div id="weather_setting">
+					<div>
+						<div class="weather_setting_explanation">
+							<span class="weather_setting_title">情報の形式を選択</span>
+						</div>
+						<select id="weather_item_type">
+							<option value="current">現在の情報</option>
+							<option value="hourly">時間ごとの情報</option>
+							<option value="daily">1日ごとの情報</option>
+						</select>
+					</div>
+					<div>
+						<div class="weather_setting_explanation">
+							<span class="weather_setting_title">取得したい情報を選択</span>
+						</div>
+						<select id="weather_item_infoname"></select>
+					</div>
+					<div id="weather_setting_day_div">
+						<div class="weather_setting_explanation">
+							<span class="weather_setting_title">取得したい日付を選択</span>
+							<span>（1日ごとの情報 または 時間ごとの情報を選択した場合のみ）</span>
+						</div>
+						<select id="weather_item_day">
+							<option value="0">今日</option>
+							<option value="1">明日</option>
+							<option value="2">明後日</option>
+							<option value="3">3日後</option>
+							<option value="4">4日後</option>
+							<option value="5">5日後</option>
+							<option value="6">6日後</option>
+						</select>
+					</div>
+					<div id="weather_setting_time_div">
+						<div class="weather_setting_explanation">
+							<span class="weather_setting_title">取得したい時刻を選択</span>
+							<span>（時間ごとの情報を選択した場合のみ）</span>
+						</div>
+						<select id="weather_item_time"></select>
+					</div>
+				</div>
+				<button class="api_push" id="incert_weather">上記情報を取得するコードを挿入</button>
+				<br>
+				<a style="font-size: x-small;" target=”_blank” href="https://open-meteo.com/en/docs#latitude=34.91268472990215&longitude=134.9806876365492&hourly=&daily=&timezone=Asia%2FTokyo">このAPIに関する説明</a>
+			</div>
+
+			<!--閉じるボタン-->
+			<div id="dialog_close_div">
+				<button id="dialog_close">この画面を閉じる</button>
+			</div>
+		</div>
+	</dialog>
 </body>
 </html>
