@@ -95,9 +95,12 @@ window.addEventListener("load", ()=>{
 	}, 100);
 	
 	window.addEventListener("keydown", event=>{
-		if (event.ctrlKey && event.key==='s') {
+		if(event.ctrlKey && event.key==='s') {
 			event.preventDefault();
 			save.click();
+		}else if(event.ctrlKey && event.key==='s') {
+			event.preventDefault();
+			run.click();
 		}
 	});
 	code.addEventListener('compositionstart', ()=>{replace_flag=false;});
