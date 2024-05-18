@@ -11,6 +11,13 @@ const code_getText=()=>{
 const has_scroll_bar=(element)=>{
 	return element.clientHeight==element.offsetHeight;
 };
+const toHalfWidth=(str)=>{
+	// 全角英数字を半角に変換
+	str = str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+	return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+	});
+	return str;
+}
 
 window.addEventListener("load", ()=>{
 	const control_button_dis=(target, new_text)=>{
@@ -171,6 +178,7 @@ window.addEventListener("load", ()=>{
 		control_button_dis(save, "自動保存完了...");
 
 		//実行
+		setTimeout(()=>{control_button_dis(run, "開始しています...");}, 500);
 		nako3_run(code.innerText);
 	});
 	google_copy.addEventListener("click", ()=>{
@@ -261,7 +269,7 @@ window.addEventListener("load", ()=>{
 	incert_read_spreadsheets.addEventListener("click", ()=>{
 		code_auto_insert(
 			"<div>《取得したいURL》に「"+(target_spreadsheets_url.value||"◯◯◯◯◯◯◯◯◯◯")+"」を代入</div>"+
-			"<div>《指定範囲》に「"+(target_cell.value||"◯◯")+"」を代入</div>"+
+			"<div>《指定範囲》に「"+(toHalfWidth(target_cell.value)||"◯◯")+"」を代入</div>"+
 			"<div></div>"+
 			"<div>「"+api_url_list.spreadsheets_read+"?select={《指定範囲》}&url={《取得したいURL》}」を《URL》に代入</div>"+
 			"<div>《URL》からHTTP取得して、JSONデコードして、《データ》に代入</div>"+
@@ -275,7 +283,7 @@ window.addEventListener("load", ()=>{
 	incert_write_spreadsheets.addEventListener("click", ()=>{
 		code_auto_insert(
 			"<div>《取得したいURL》に「"+(target_spreadsheets_url.value||"◯◯◯◯◯◯◯◯◯◯")+"」を代入</div>"+
-			"<div>《指定範囲》に「"+(target_cell.value||"◯◯")+"」を代入</div>"+
+			"<div>《指定範囲》に「"+(toHalfWidth(target_cell.value)||"◯◯")+"」を代入</div>"+
 			"<div>《書き込みたい内容》に「◯◯◯◯◯◯」を代入</div>"+
 			"<div></div>"+
 			"<div>「"+api_url_list.spreadsheets_write+"?select={《指定範囲》}&data={《書き込みたい内容》}&url={《取得したいURL》}」を《URL》に代入</div>"+

@@ -106,6 +106,9 @@ input::placeholder{
 			margin: 3px 0;
 			font-size: 1em;
 		}
+		#run:disabled{
+			color: #000;
+		}
 		#fontsize{
 			display: flex;
 			justify-content: space-evenly;
