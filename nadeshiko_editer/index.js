@@ -91,10 +91,20 @@ window.addEventListener("load", ()=>{
 			old_find_key=find_key;
 			reference.innerHTML="";
 			find_key.forEach(key=>{
-				const click_div=reference.appendChild(document.createElement("div"));
-				click_div.textContent=key;
-				click_div.onclick=()=>{window.open(wnako3_reference[key]);}
-				click_div.classList.add("click_div");
+				if(reference.innerText.indexOf(key)==-1){
+					const click_div=reference.appendChild(document.createElement("div"));
+					click_div.textContent=key;
+					click_div.onclick=()=>{
+						if(typeof wnako3_reference[key]=="string"){
+							window.open(wnako3_reference[key]);
+						}else{
+							reference_dialog.innerHTML="<h3>"+key+"</h3><div>使い方：<br>"+wnako3_reference[key][0]+"</div><br><div>説明：<br>"+wnako3_reference[key][1]+"</div>";
+							message_dialog_setting("reference");
+							message_dialog_show();
+						}
+					}
+					click_div.classList.add("click_div");
+				}
 			});
 		}
 		konami_check();
@@ -156,6 +166,9 @@ window.addEventListener("load", ()=>{
 	auto_push.addEventListener("click", ()=>{
 		message_dialog_setting("auto_push");
 		message_dialog_show();
+	});
+	var_push.addEventListener("click", ()=>{
+		code_insert("《》");
 	});
 	save.addEventListener("click", ()=>{
 		localStorage.setItem('LONGIC_save', code.innerHTML);
@@ -226,7 +239,7 @@ window.addEventListener("load", ()=>{
 			weather_item_type.options[0].selected=true;
 			weather_item_type.dispatchEvent(new Event("change"));
 			weather_auto_push_dialog.style.display="block";
-			setTimeout(()=>{mymap.invalidateSize()}, 100);
+			setTimeout(()=>{map_list[0].invalidateSize()}, 100);
 
 		}else if(event_name=="bulletin_auto_push"){
 			//掲示板API
@@ -235,6 +248,14 @@ window.addEventListener("load", ()=>{
 			bulletin_type.dispatchEvent(new Event("change"));
 			bulletin_auto_push_dialog.style.display="block";
 
+		}else if(event_name=="reference"){
+			//reference表示
+			reference_dialog.style.display="block";
+
+		}else if(event_name=="map_auto_push"){
+			//地図挿入時
+			map_auto_push_dialog.style.display="block";
+			setTimeout(()=>{map_list[1].invalidateSize()}, 100);
 		}
 	};
 	message_dialog_inner.addEventListener("click", event=>{
@@ -261,6 +282,24 @@ window.addEventListener("load", ()=>{
 			"<div>《URL》からHTTP取得して、JSONデコードして、《データ》に代入</div>"+
 			"<div></div>"+
 			"<div>《データ》を表示</div>"+
+			"<div></div>"+
+			"<div></div>"
+		);
+		message_dialog_close();
+	});
+	copy_only_latlng.addEventListener("click", ()=>{
+		navigator.clipboard.writeText((marker_list[1]._latlng.lat||34.91268472990215)+"，"+(marker_list[1]._latlng.lng||134.9806876365492));
+		message_dialog_close();
+	});
+	incert_mapcode.addEventListener('click', ()=>{
+		code_auto_insert(
+			"<div>「"+(marker_list[1]._latlng.lat||34.91268472990215)+"、"+(marker_list[1]._latlng.lng||134.9806876365492)+"」を《座標》に代入</div>"+
+			"<div>《座標》の地図作成して，《地図》に代入</div>"+
+			"<div></div>"+
+			"<div>《地図》を15にズーム倍率変更</div>"+
+			"<div>《地図》の《座標》にピン設置して《ピン1》に代入</div>"+
+			"<div>《ピン1》に「附属中学校はここです」をピンクリック時表示</div>"+
+			"<div>《ピン1》を強制表示</div>"+
 			"<div></div>"+
 			"<div></div>"
 		);
@@ -307,8 +346,8 @@ window.addEventListener("load", ()=>{
 			result_insert="[《何日後のデータ？》×24+《何時のデータ？》]";
 		}
 		code_auto_insert(
-			"<div>《北緯》に「"+(marker._latlng.lat||34.91268472990215)+"」を代入</div>"+
-			"<div>《東経》に「"+(marker._latlng.lng||134.9806876365492)+"」を代入</div>"+
+			"<div>《北緯》に「"+(marker_list[0]._latlng.lat||34.91268472990215)+"」を代入</div>"+
+			"<div>《東経》に「"+(marker_list[0]._latlng.lng||134.9806876365492)+"」を代入</div>"+
 			"<div>《情報の形式》に「"+(weather_item_type.value||"◯◯◯◯◯◯◯")+"」を代入</div>"+
 			"<div>《取得したい情報》に「"+(weather_item_infoname.value||"◯◯◯◯◯◯◯")+"」を代入</div>"+
 			add_insert+
@@ -343,11 +382,14 @@ window.addEventListener("load", ()=>{
 
 
 	//コードの自動挿入の設定画面
+	map_auto_push.addEventListener("click", ()=>{
+		message_dialog_setting("map_auto_push");
+	});
 	spreadsheets_auto_push.addEventListener("click", ()=>{
 		message_dialog_setting("spreadsheets_auto_push");
 	});
 	weather_auto_push.addEventListener("click", ()=>{
-		mymap_reset();
+		map_reset();
 		message_dialog_setting("weather_auto_push");
 	});
 
@@ -463,24 +505,33 @@ window.addEventListener("load", ()=>{
 
 
 	//地図関連
-	const mymap=L.map('pin_map');
-	let marker;
-	L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-		maxZoom: 18,
-		attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>',
-	}).addTo(mymap);
-	const mymap_reset=()=>{
-		mymap.setView([34.91268472990215, 134.9806876365492], 16);
-		mymap_set([34.91268472990215, 134.9806876365492]);
-	}
-	const mymap_set=(latlng)=>{
-		if(marker){
-			mymap.removeLayer(marker);
-		}
-		marker=L.marker(latlng).addTo(mymap);
-	}
-	mymap.on("click", e=>{
-		mymap_set(e.latlng);
+	const map_list=[L.map('pin_map'), L.map('map')];
+	let marker_list=[];
+
+	map_list.forEach((e, index)=>{
+
+		L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>',
+		}).addTo(e);
+		e.on("click", e_click=>{
+			map_set(index, e_click.latlng);
+		});
+
 	});
-	mymap_reset();
+
+	const map_reset=()=>{
+		map_list.forEach((e, index)=>{
+			e.setView([34.91268472990215, 134.9806876365492], 16);
+			map_set(index, [34.91268472990215, 134.9806876365492]);
+		});
+	}
+	const map_set=(id, latlng)=>{
+		if(marker_list[id]){
+			map_list[id].removeLayer(marker_list[id]);
+		}
+		marker_list[id]=L.marker(latlng).addTo(map_list[id]);
+	}
+	
+	map_reset();
 });

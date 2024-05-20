@@ -35,7 +35,11 @@ window.addEventListener("load", ()=>{
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_kansuji.js",
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_markup.js",
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_turtle.js",
-			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_webworker.js"
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_webworker.js",
+
+			//自作プラグインの読み込み
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_leaflet.js",
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_convenient.js"
 		].forEach(wnako_plugin_url=>{
 			let plugin_script=document.head.appendChild(document.createElement('script'));
 			plugin_script.src=wnako_plugin_url;

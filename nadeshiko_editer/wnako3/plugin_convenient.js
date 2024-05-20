@@ -2,9 +2,23 @@
 const plugin_convenient={
 	'画像変更': {
 		type: 'func',
-		josi: [['を'],['に']],
+		josi: [['を'],['に','へ']],
 		fn: function (img, src, sys) {
 			img.src=src;
+		}
+	},
+	'文字色変更': {
+		type: 'func',
+		josi: [['を'],['に','へ']],
+		fn: function (element, color, sys) {
+			element.style.color=color;
+		}
+	},
+	'背景色変更': {
+		type: 'func',
+		josi: [['を'],['に','へ']],
+		fn: function (element, color, sys) {
+			element.style.backgroundColor=color;
 		}
 	},
 

@@ -32,6 +32,7 @@
 			<button id="run" class="control_button" style="background-color: aquamarine;">実行</button>
 			<button id="save" class="control_button">保存</button>
 			<button id="auto_push" class="control_button" style="background-color: #ff848e;">プログラムの自動挿入</button>
+			<button id="var_push" class="control_button" style="background-color: #099500; color: #fff;">《 変数 》の挿入</button>
 			<button id="clear" class="control_button">結果をクリア</button>
 			<button id="code_clear" class="control_button">プログラムを削除</button>
 			<button id="download" class="control_button">ダウンロード</button>
@@ -72,13 +73,25 @@
 				<pre><code id="copy_code"></code></pre>
 			</div>
 
+			<!--プラグインの説明文呼び出し-->
+			<div class="dialog_item" id="reference_dialog"></div>
+
 			<!--コードの自動挿入を押した場合-->
 			<div class="dialog_item" id="code_auto_push_list_dialog">
 				<div id="code_auto_push_list_dialog_inner">
 					<button class="api_push" id="send_mail_auto_push">メールの送信</button>
+					<button class="api_push" id="map_auto_push">地図作成</button>
 					<button class="api_push" id="weather_auto_push">気象情報取得</button>
 					<button class="api_push" id="spreadsheets_auto_push">スプレッドシート読み書き</button>
 					<button class="api_push" id="chat_auto_push">掲示板(スプレッドシート中級)</button>
+				</div>
+			</div>
+			<div class="dialog_item" id="map_auto_push_dialog">
+				<h3>クリックしてピンを設定</h3>
+				<div id="map"></div>
+				<div class="double_button_div" id="map_push_button">
+					<button class="api_push" id="copy_only_latlng">座標のみコピー</button>
+					<button class="api_push" id="incert_mapcode">この位置の地図を生成するコードを挿入</button>
 				</div>
 			</div>
 			<div class="dialog_item" id="spreadsheets_auto_push_dialog">
@@ -89,7 +102,7 @@
 				<div>対象とするセル番号：<input type="text" id="target_cell" placeholder="A1"></div>
 				<br>
 				<span class="ema">※「技術BOT」アカウントに読み込み/書き込み権限がないと正常に動作しません※</span>
-				<div id="spreadsheets_auto_push_ok">
+				<div class="double_button_div" id="spreadsheets_auto_push_ok">
 					<button class="api_push" id="incert_read_spreadsheets">上記セルを読むコードを挿入</button>
 					<button class="api_push" id="incert_write_spreadsheets">上記セルに書き込むコードを挿入</button>
 				</div>

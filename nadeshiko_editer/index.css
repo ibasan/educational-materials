@@ -165,7 +165,7 @@ input::placeholder{
 	padding: 0;
 
 	button.api_push{
-		height: 20%;
+		height: 16%;
 		width: 80%;
 		font-size: 1.1rem;
 		background-color: #555;
@@ -206,6 +206,15 @@ input::placeholder{
 			}
 		}
 
+		#reference_dialog{
+			margin-bottom: 15px;
+		}
+
+		#map{
+			height: 300px;
+			margin-bottom: 20px;
+		}
+
 		#code_auto_push_list_dialog_inner{
 			display: flex;
 			flex-direction: column;
@@ -244,6 +253,16 @@ input::placeholder{
 			}
 		}
 
+		.double_button_div{
+			display: flex;
+			justify-content: space-evenly;
+
+			> button{
+				width: 40%;
+				height: 10vh;
+			}
+		}
+
 		#spreadsheets_auto_push_dialog{
 			margin-bottom: 5vh;
 			*{
@@ -262,16 +281,6 @@ input::placeholder{
 
 			#target_cell{
 				width: 3em;
-			}
-
-			#spreadsheets_auto_push_ok{
-				display: flex;
-				justify-content: space-evenly;
-
-				> button{
-					width: 40%;
-					height: 10vh;
-				}
 			}
 		}
 
