@@ -185,6 +185,8 @@ window.addEventListener("load", ()=>{
 		URL.revokeObjectURL(aTag.href);
 	});
 	run.addEventListener("click", ()=>{
+		navigator.nako3.reset();
+
 		//自動保存
 		localStorage.setItem('LONGIC_save', code.innerHTML);
 		window.removeEventListener("beforeunload", unload);
