@@ -1,5 +1,15 @@
 
 const plugin_convenient={
+	'meta': {
+		type: 'const',
+		value: {
+			pluginName: 'plugin_convenient', // プラグインの名前
+			description: '便利機能を提供するプラグイン', // プラグインの説明
+			pluginVersion: '3.6.0', // プラグインのバージョン
+			nakoRuntime: ['wnako'], // 対象ランタイム
+			nakoVersion: '3.6.0' // 要求なでしこバージョン
+		}
+	},
 	'画像変更': {
 		type: 'func',
 		josi: [['を'],['に','へ']],
