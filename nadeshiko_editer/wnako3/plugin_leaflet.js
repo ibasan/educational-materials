@@ -5,6 +5,16 @@
 */
 
 const Plugin_leaflet={
+	'meta': {
+		type: 'const',
+		value: {
+			pluginName: 'Plugin_leaflet', // プラグインの名前
+			description: '地図作成を補助する機能を提供するプラグイン', // プラグインの説明
+			pluginVersion: '3.6.0', // プラグインのバージョン
+			nakoRuntime: ['wnako'], // 対象ランタイム
+			nakoVersion: '3.6.0' // 要求なでしこバージョン
+		}
+	},
 	'地図作成': {
 		type: 'func',
 		josi: [['で','の']],
