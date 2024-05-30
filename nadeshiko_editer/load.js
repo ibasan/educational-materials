@@ -61,6 +61,8 @@ window.addEventListener("load", ()=>{
 				}else if(e.level==='warn' || e.level==='error') {
 					if(e.noColor==='[警告]undefined') return; //意味不明なエラー?の出力を回避できるらしい
 					console.log(...e.browserConsole);
+
+					if(e.noColor.indexOf('古い形式なので正しく動作しない可能性があります')!=-1) return;
 					error.innerHTML=e.html;
 				}
 			});
