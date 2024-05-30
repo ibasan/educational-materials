@@ -46,6 +46,23 @@ const plugin_convenient={
 		}
 	},
 
+	'ドライブ埋込': {
+		type: 'func',
+		josi: [['の', 'を', 'から']],
+		pure: true,
+		fn: function (url, sys){
+			const iframe=sys.__exec('DOM部品作成', ['iframe', sys]);
+			const frame_url=url.split("/").slice(0,-1).join("/")+"/preview";
+
+			iframe.src=frame_url;
+			iframe.width="640";
+			iframe.height="480";
+			iframe.allow="autoplay";
+			
+			return iframe;
+		}
+	},
+
 }
 // モジュールのエクスポート(必ず必要)
 if (typeof module !== 'undefined' && module.exports) {
