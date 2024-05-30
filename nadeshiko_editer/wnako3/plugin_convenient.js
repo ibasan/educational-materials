@@ -10,6 +10,20 @@ const plugin_convenient={
 			nakoVersion: '3.6.0' // 要求なでしこバージョン
 		}
 	},
+	'画像作成': {
+		type: 'func',
+		josi: [['の', 'から']],
+		pure: true,
+		fn: function (url, sys){
+			const img=sys.__exec('DOM部品作成', ['img', sys]);
+			if(url.indexOf("https://drive.google.com/")!=-1){
+				img.src="https://lh3.googleusercontent.com/d/"+url.split("/").slice(-2)[0];
+			}else{
+				img.src=url;
+			}
+			return img;
+		}
+	},
 	'画像変更': {
 		type: 'func',
 		josi: [['を'],['に','へ']],
