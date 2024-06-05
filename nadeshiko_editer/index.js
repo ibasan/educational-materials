@@ -107,6 +107,18 @@ window.addEventListener("load", ()=>{
 				}
 			});
 		}
+
+		//改行記号まで一度に削除した際に、原因不明のspanが生成される問題
+		//根本解決ではないので、注意
+		if(now_code.indexOf('<span style="font-size:')!=-1){
+			Array.from(code.children).forEach(e=>{
+				const e_inner_span=e.getElementsByTagName('span');
+				if(e_inner_span.length!=0){
+					e.innerHTML=e_inner_span[0].innerHTML;
+				}
+			});
+		}
+
 		konami_check();
 
 	}, 100);
@@ -290,19 +302,19 @@ window.addEventListener("load", ()=>{
 		message_dialog_close();
 	});
 	copy_only_latlng.addEventListener("click", ()=>{
-		navigator.clipboard.writeText((marker_list[1]._latlng.lat||34.91268472990215)+"，"+(marker_list[1]._latlng.lng||134.9806876365492));
+		navigator.clipboard.writeText((marker_list[1]._latlng.lat||34.91268472990215)+"、"+(marker_list[1]._latlng.lng||134.9806876365492));
 		message_dialog_close();
 	});
 	incert_mapcode.addEventListener('click', ()=>{
 		code_auto_insert(
 			"<div>「"+(marker_list[1]._latlng.lat||34.91268472990215)+"、"+(marker_list[1]._latlng.lng||134.9806876365492)+"」を《座標》に代入</div>"+
-			"<div>《座標》の地図作成して，《地図》に代入</div>"+
+			"<div>《座標》の地図作成して、《地図》に代入</div>"+
 			"<div></div>"+
-			"<div>《地図》を15にズーム倍率変更</div>"+
-			"<div>《地図》の《座標》にピン設置して《ピン1》に代入</div>"+
-			"<div>《ピン1》に「附属中学校はここです」をピンクリック時表示</div>"+
-			"<div>《ピン1》を強制表示</div>"+
-			"<div></div>"+
+			//"<div>《地図》を15にズーム倍率変更</div>"+
+			//"<div>《地図》の《座標》にピン設置して《ピン1》に代入</div>"+
+			//"<div>《ピン1》に「附属中学校はここです」をピンクリック時表示</div>"+
+			//"<div>《ピン1》を強制表示</div>"+
+			//"<div></div>"+
 			"<div></div>"
 		);
 		message_dialog_close();

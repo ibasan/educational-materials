@@ -40,6 +40,8 @@ window.addEventListener("load", ()=>{
 			//自作プラグインの読み込み
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_leaflet.js",
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_convenient.js"
+			//"./wnako3/plugin_convenient.js"
+
 		].forEach(wnako_plugin_url=>{
 			let plugin_script=document.head.appendChild(document.createElement('script'));
 			plugin_script.src=wnako_plugin_url;
