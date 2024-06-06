@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>音波生成</title>
+	<script type="text/javascript" src="./p5.min.js"></script>
+	<script type="text/javascript" src="./p5.sound.min.js"></script>
+	<script type="text/javascript">
+		let osc=null;
+		let env=null;
+		let now_stop=true;
+
+		function setup() {
+			createCanvas(600,600);
+			osc = new p5.Oscillator('sine')
+			osc.freq(260); //はじめはドの音
+			osc.amp(0.5);
+			fft = new p5.FFT();
+		}
+		function draw() {
+			background(220);
+
+			let waveform = fft.waveform();
+			noFill();
+			beginShape();
+			stroke(20);
+			for (let i = 0; i < waveform.length; i++){
+				let x = map(i, 0, waveform.length, 0, width);
+				let y = map( waveform[i], -1, 1, 0, height);
+				vertex(x,y);
+			}
+			endShape();
+		}
+
+		function keyPressed() {
+			if(now_stop){
+				osc.start();
+				instructions.innerText="Spaceキーで停止！";
+			}else{
+				osc.stop();
+				instructions.innerText="Spaceキーで開始！";
+			}
+			now_stop=!now_stop;
+		}
+
+		window.addEventListener("load", ()=>{
+			speed.addEventListener('change', e=>{
+				osc.freq(speed.value-0);
+				speed_result.innerText="frequency: "+speed.value+"Hz";
+			});
+			volume.addEventListener('change', e=>{
+				osc.amp(volume.value/100);
+				volume_result.innerText="volume: "+volume.value;
+			});
+		});
+
+	</script>
+</head>
+<body style="width: 600px;">
+	<h1 style="text-align: center;" id="instructions">Spaceキーで開始！</h1>
+	<div style="display: flex; justify-content: space-around;">
+		<div>
+			<h3 id="speed_result">frequency: 260Hz</h3>
+			<input type="range" id="speed" min="200" max="1000" value="260">
+		</div>
+		<div>
+			<h3 id="volume_result">volume: 50</h3>
+			<input type="range" id="volume" min="0" max="100" value="50">
+		</div>
+	</div>
+</body>
+</html>

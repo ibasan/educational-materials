@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>音波生成</title>
+	<script type="text/javascript" src="./p5.min.js"></script>
+	<script type="text/javascript" src="./p5.sound.min.js"></script>
+	<script type="text/javascript">
+		const freq_list=document.getElementsByClassName("marker");
+		let osc=null;
+		let env=null;
+		let now_stop=true;
+		let now_sound_id=-1;
+		let now_timer=-1;
+
+		function setup() {
+			createCanvas(600,600);
+			osc = new p5.Oscillator('sine')
+			osc.freq(260); //はじめはドの音
+			osc.amp(0.5);
+			fft = new p5.FFT();
+		}
+		function draw() {
+			background(220);
+
+			let waveform = fft.waveform();
+			noFill();
+			beginShape();
+			stroke(20);
+			for (let i = 0; i < waveform.length; i++){
+				let x = map(i, 0, waveform.length, 0, width);
+				let y = map( waveform[i], -1, 1, 0, height);
+				vertex(x,y);
+			}
+			endShape();
+		}
+
+		function marker_clear(){
+			Array.from(freq_list).forEach(e=>{
+				e.style.backgroundColor="";
+			});
+		}
+
+		function keyPressed(e){
+			if(e.code!="Space") return;
+			e.preventDefault();
+			if(now_stop){
+				osc.start();
+				change_freq();
+				instructions.innerText="Spaceキーで停止！";
+				now_sound_id=0;
+			}else{
+				osc.stop();
+				instructions.innerText="Spaceキーで開始！";
+				clearTimeout(now_timer);
+				marker_clear();
+				now_timer=-1;
+				now_sound_id=-1;
+			}
+			now_stop=!now_stop;
+		}
+		function change_freq(){
+			marker_clear();
+			now_sound_id++;
+			if(freq_list.length<=now_sound_id) now_sound_id=0;
+			freq_list[now_sound_id].style.backgroundColor="rgba(255,0,0,.3)";
+			osc.freq(document.getElementsByClassName("freq")[now_sound_id].value-0);
+			now_timer=setTimeout(change_freq, (time.value-0)*1000);
+		}
+
+		window.addEventListener("load", ()=>{
+			speed1.addEventListener('change', e=>{
+				if(now_sound_id==0) osc.freq(speed1.value-0);
+				speed_result1.innerText="第1周波数: "+speed1.value+"Hz";
+			});
+			speed2.addEventListener('change', e=>{
+				if(now_sound_id==1) osc.freq(speed2.value-0);
+				speed_result2.innerText="第2周波数: "+speed2.value+"Hz";
+			});
+			time.addEventListener('change', e=>{
+				time_result.innerText="切り替え時間: "+time.value+"秒";
+			});
+			volume.addEventListener('change', e=>{
+				osc.amp(volume.value/100);
+				volume_result.innerText="volume: "+volume.value;
+			});
+		});
+
+	</script>
+</head>
+<body style="width: 600px;">
+	<h1 style="text-align: center;" id="instructions">Spaceキーで開始！</h1>
+	<div style="display: flex; justify-content: space-around;">
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<div>
+				<h3 id="speed_result1" class="marker">第1周波数: 960Hz</h3>
+				<input class="freq" type="range" id="speed1" min="200" max="1000" value="960">
+			</div>
+			<div>
+				<h3 id="speed_result2" class="marker">第2周波数: 770Hz</h3>
+				<input class="freq" type="range" id="speed2" min="200" max="1000" value="770">
+			</div>
+		</div>
+		<div style="display: flex; flex-direction: column;">
+			<div>
+				<h3 id="time_result">切り替え時間: 1.3秒</h3>
+				<input type="range" id="time" min="0.1" max="3" value="1.3" step="0.05" style="width:200px;">
+			</div>
+			<div>
+				<h3 id="volume_result">volume: 50</h3>
+				<input type="range" id="volume" min="0" max="100" value="50">
+			</div>
+		</div>
+	</div>
+</body>
+</html>
