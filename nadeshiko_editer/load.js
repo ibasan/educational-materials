@@ -2,6 +2,7 @@ let template_html;
 let template_canvas;
 let autorun_code;
 const result_clear=()=>{
+	navigator.nako3.reset();
 	output.innerHTML=template_html;
 };
 
