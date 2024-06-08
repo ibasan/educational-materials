@@ -129,6 +129,13 @@ const Plugin_leaflet={
 			setTimeout(()=>{mypin.openPopup();}, 500);
 		}
 	},
+	"強制非表示": {
+		type: 'func',
+		josi: [['を']],
+		fn: function (mypin, sys) {
+			setTimeout(()=>{mypin.closePopup();}, 500);
+		}
+	},
 
 }
 // モジュールのエクスポート(必ず必要)
