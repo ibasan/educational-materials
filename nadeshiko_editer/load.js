@@ -70,6 +70,13 @@ window.addEventListener("load", ()=>{
 				}
 			});
 
+			//掛けるの文字が違う場合でも実行できるように登録
+			navigator.nako3.prepare.convertTable.set(10005,"*");
+			navigator.nako3.prepare.convertTable.set(10007,"*");
+			navigator.nako3.prepare.convertTable.set(10008,"*");
+			navigator.nako3.prepare.convertTable.set(10060,"*");
+			navigator.nako3.prepare.convertTable.set(10062,"*");
+
 			//autorun
 			if(autorun_code){
 				nako3_run(autorun_code);

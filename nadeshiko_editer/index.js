@@ -197,9 +197,6 @@ window.addEventListener("load", ()=>{
 		URL.revokeObjectURL(aTag.href);
 	});
 	run.addEventListener("click", ()=>{
-		//掛ける記号が違う問題に対処
-		code.innerHTML=code.innerHTML.replaceAll(/✕|✖|✗|✘|❌|❎/g, "×");
-
 		//自動保存
 		localStorage.setItem('LONGIC_save', code.innerHTML);
 		window.removeEventListener("beforeunload", unload);
