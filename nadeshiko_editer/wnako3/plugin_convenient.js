@@ -10,6 +10,9 @@ const plugin_convenient={
 			nakoVersion: '3.6.0' // 要求なでしこバージョン
 		}
 	},
+
+
+	'無限': { type: 'const', value: Infinity },
 	'画像作成': {
 		type: 'func',
 		josi: [['の', 'から']],
