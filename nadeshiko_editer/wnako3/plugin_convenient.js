@@ -65,6 +65,15 @@ const plugin_convenient={
 			return iframe;
 		}
 	},
+	'変更時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
+		type: 'func',
+		josi: [['で'], ['を']],
+		pure: true,
+		fn: function (func: any, dom: any, sys: any) {
+			sys.__addEvent(dom, 'change', func, null)
+		},
+		return_none: true
+	},
 
 }
 // モジュールのエクスポート(必ず必要)

@@ -16,6 +16,7 @@ const wnako3_reference={
 	"文字色変更": ["《ラベル》を青色に文字色変更<br>《ラベル》を青色へ文字色変更", "一度表示したラベル等の文字を、指定された色に変更します。"],
 	"背景色変更": ["《ラベル》を青色に背景色変更<br>《ラベル》を青色へ背景色変更", "一度表示したラベル等の背景色を、指定された色に変更します。"],
 	"ドライブ埋込": ["《URL》をドライブ埋め込み", "URLを指定し、ドライブのファイルを埋め込みます。ただし、「リンクを知っている全員」がアクセスできるようになっている必要があります。"],
+	"変更時": ["《セレクトボックス》をクリックした時には", "セレクトボックスやテキストエリアが変更された時に、実行するプログラムを記述します。"],
 
 
 	//以下、wnako3のリファレンス
@@ -721,4 +722,4 @@ const wnako3_reference={
 	MIDI演奏:'https://nadesi.com/v3/doc/index.php?nadesiko3-music%2FMIDI%E6%BC%94%E5%A5%8F&show',
 	MIDI停止:'https://nadesi.com/v3/doc/index.php?nadesiko3-music%2FMIDI%E5%81%9C%E6%AD%A2&show',
 	MIDIループ再生設定:'https://nadesi.com/v3/doc/index.php?nadesiko3-music%2FMIDI%E3%83%AB%E3%83%BC%E3%83%97%E5%86%8D%E7%94%9F%E8%A8%AD%E5%AE%9A&show',
-}
+};

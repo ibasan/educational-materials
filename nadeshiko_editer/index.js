@@ -77,6 +77,7 @@ window.addEventListener("load", ()=>{
 		event.returnValue="";
 	};
 
+	const defo_keys=Object.keys(wnako3_reference).sort((a,b)=>a.length>b.length?1:-1);
 	const code_settings=setInterval(()=>{
 		//すべて消えてしまった時用の復元処理
 		if(code.getElementsByTagName("div").length==0){
@@ -85,7 +86,7 @@ window.addEventListener("load", ()=>{
 
 		//リファレンス検索
 		const now_code=code.innerHTML.replaceAll(/「.*?」|《.*?》/g, "");
-		const find_key=Object.keys(wnako3_reference).filter(key=>now_code.indexOf(key)!=-1);
+		const find_key=defo_keys.filter(key=>now_code.indexOf(key)!=-1);
 
 		if(!_.isEqual(old_find_key, find_key)){
 			old_find_key=find_key;
