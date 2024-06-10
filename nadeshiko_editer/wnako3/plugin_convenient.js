@@ -69,7 +69,7 @@ const plugin_convenient={
 		type: 'func',
 		josi: [['で'], ['を']],
 		pure: true,
-		fn: function (func: any, dom: any, sys: any) {
+		fn: function (func, dom, sys) {
 			sys.__addEvent(dom, 'change', func, null)
 		},
 		return_none: true
