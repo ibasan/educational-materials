@@ -41,6 +41,13 @@ const plugin_convenient={
 			element.style.color=color;
 		}
 	},
+	'文字サイズ変更': {
+		type: 'func',
+		josi: [['を'],['に','へ']],
+		fn: function (element, size, sys) {
+			element.style.fontSize=size;
+		}
+	},
 	'背景色変更': {
 		type: 'func',
 		josi: [['を'],['に','へ']],
