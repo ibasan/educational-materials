@@ -20,7 +20,7 @@ const nako3_run=main=>{
 	setTimeout(async ()=>{
 		await navigator.nako3.loadDependencies(addon+main, "main.nako3", addon);
 		await navigator.nako3.run(addon+main, "main.nako3", addon);
-	}, 100);
+	}, 1000);
 }
 
 window.addEventListener("load", ()=>{
