@@ -518,20 +518,27 @@ window.addEventListener("load", ()=>{
 
 
 	//地図関連
-	const map_list=[L.map('pin_map'), L.map('map')];
+	let map_list;
 	let marker_list=[];
+	const map_init=setInterval(()=>{
+		if(L){
+			clearInterval(map_init);
+			map_list=[L.map('pin_map'), L.map('map')];
+			map_list.forEach((e, index)=>{
 
-	map_list.forEach((e, index)=>{
+				L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+					maxZoom: 18,
+					attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>',
+				}).addTo(e);
+				e.on("click", e_click=>{
+					map_set(index, e_click.latlng);
+				});
 
-		L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-			maxZoom: 18,
-			attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>',
-		}).addTo(e);
-		e.on("click", e_click=>{
-			map_set(index, e_click.latlng);
-		});
-
-	});
+			});
+			map_reset();
+		}
+	},100);
+	
 
 	const map_reset=()=>{
 		map_list.forEach((e, index)=>{
@@ -545,6 +552,5 @@ window.addEventListener("load", ()=>{
 		}
 		marker_list[id]=L.marker(latlng).addTo(map_list[id]);
 	}
-	
-	map_reset();
+
 });
