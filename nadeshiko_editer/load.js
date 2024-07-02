@@ -20,12 +20,19 @@ const nako3_run=main=>{
 	setTimeout(async ()=>{
 		await navigator.nako3.loadDependencies(addon+main, "main.nako3", addon);
 		await navigator.nako3.run(addon+main, "main.nako3", addon);
-	}, 1000);
+	}, 100);
 }
 
 window.addEventListener("load", ()=>{
 	template_html=output.innerHTML;
 	template_canvas=result_canvas.toDataURL();
+
+	//地図ライブラリの読み込み
+	const leaflet_css=document.head.appendChild(document.createElement('link'));
+	leaflet_css.setAttribute("rel", "stylesheet");
+	leaflet_css.setAttribute("href", "https://github.kasumigaura.work/nadeshiko_editer/leaflet/leaflet.css");
+	const leaflet_js=document.head.appendChild(document.createElement('script'));
+	leaflet_js.src="https://github.kasumigaura.work/nadeshiko_editer/leaflet/leaflet.js";
 
 	//wnakoの読み込み
 	let script=document.head.appendChild(document.createElement('script'));
