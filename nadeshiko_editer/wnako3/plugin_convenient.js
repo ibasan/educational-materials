@@ -19,19 +19,19 @@ const plugin_convenient={
 		pure: true,
 		fn: function (url, sys){
 			const img=sys.__exec('DOM部品作成', ['img', sys]);
-			if(url.indexOf("https://drive.google.com/")!=-1){
-				img.src="https://lh3.googleusercontent.com/d/"+url.split("/").slice(-2)[0];
-			}else{
-				img.src=url;
-			}
+			sys.__exec('画像変更', [img, url, sys]);
 			return img;
 		}
 	},
 	'画像変更': {
 		type: 'func',
 		josi: [['を'],['に','へ']],
-		fn: function (img, src, sys) {
-			img.src=src;
+		fn: function (img, url, sys) {
+			if(url.indexOf("https://drive.google.com/")!=-1){
+				img.src="https://lh3.googleusercontent.com/d/"+url.split("/").slice(-2)[0];
+			}else{
+				img.src=url;
+			}
 		}
 	},
 	'文字色変更': {
