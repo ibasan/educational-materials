@@ -72,12 +72,22 @@ const plugin_convenient={
 			return iframe;
 		}
 	},
-	'変更時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
+	'時刻選択ボックス作成': {
+		type: 'func',
+		josi: [],
+		pure: true,
+		fn: function (sys: any) {
+			const inp = sys.exec('DOM部品作成', ['input', sys])
+			inp.type = 'time'
+			return inp
+		}
+	},
+	'変更時': {
 		type: 'func',
 		josi: [['で'], ['を']],
 		pure: true,
 		fn: function (func, dom, sys) {
-			sys.__addEvent(dom, 'change', func, null)
+			sys.addEvent(dom, 'change', func, null)
 		},
 		return_none: true
 	},
