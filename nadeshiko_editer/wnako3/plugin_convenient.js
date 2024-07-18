@@ -76,7 +76,7 @@ const plugin_convenient={
 		type: 'func',
 		josi: [],
 		pure: true,
-		fn: function (sys: any) {
+		fn: function (sys) {
 			const inp = sys.exec('DOM部品作成', ['input', sys])
 			inp.type = 'time'
 			return inp
