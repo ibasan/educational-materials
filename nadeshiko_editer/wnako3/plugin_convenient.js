@@ -56,6 +56,19 @@ const plugin_convenient={
 		}
 	},
 
+	'埋込': {
+		type: 'func',
+		josi: [['を']],
+		fn: function (src, sys) {
+			const iframe=sys.__exec('DOM部品作成', ['iframe', sys]);
+			iframe.src=src;
+			iframe.width="640";
+			iframe.height="480";
+
+			return iframe;
+		}
+	},
+
 	'ドライブ埋込': {
 		type: 'func',
 		josi: [['の', 'を', 'から']],
