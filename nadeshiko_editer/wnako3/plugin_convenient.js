@@ -117,19 +117,23 @@ const plugin_convenient={
 
 			const perfect=[];
 			const candidate=[];
+			const candidate_name=[];
 
 			json.forEach(item=>{
 				if(item["properties"]["title"]==name){
 					perfect.push(item["geometry"]["coordinates"].reverse().join("、"));
 				}else if(item["properties"]["title"].indexOf(name)!=-1){
-					candidate.push(item["properties"]["title"]);
+					candidate.push(item["geometry"]["coordinates"].reverse().join("、"));
+					candidate_name.push(item["properties"]["title"]);
 				}
 			});
 
 			if(perfect.length!=0){
 				return perfect;
-			}else{
+			}else if(candidate.length==1){
 				return candidate;
+			}else{
+				return candidate_name;
 			}
 		}
 		
