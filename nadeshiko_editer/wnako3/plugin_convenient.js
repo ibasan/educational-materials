@@ -120,7 +120,7 @@ const plugin_convenient={
 
 			json.forEach(item=>{
 				if(item["properties"]["title"]==name){
-					perfect.push(item["geometry"]["coordinates"].join("、"));
+					perfect.push(item["geometry"]["coordinates"].reverse().join("、"));
 				}else if(item["properties"]["title"].indexOf(name)!=-1){
 					candidate.push(item["properties"]["title"]);
 				}
