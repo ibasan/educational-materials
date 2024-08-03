@@ -122,7 +122,7 @@ const plugin_convenient={
 				if(item["properties"]["title"]==name){
 					perfect.push(item["geometry"]["coordinates"].join(","));
 				}else if(item["properties"]["title"].indexOf(name)!=-1){
-					candidate.push(item["geometry"]["coordinates"].join(","));
+					candidate.push(item["properties"]["title"]);
 				}
 			});
 
