@@ -90,9 +90,9 @@ const plugin_convenient={
 		josi: [],
 		pure: true,
 		fn: function (sys) {
-			const inp = sys.__exec('DOM部品作成', ['input', sys])
-			inp.type = 'time'
-			return inp
+			const inp = sys.__exec('DOM部品作成', ['input', sys]);
+			inp.type = 'time';
+			return inp;
 		}
 	},
 	'変更時': {
@@ -100,10 +100,40 @@ const plugin_convenient={
 		josi: [['で'], ['を']],
 		pure: true,
 		fn: function (func, dom, sys) {
-			sys.__addEvent(dom, 'change', func, null)
+			sys.__addEvent(dom, 'change', func, null);
 		},
 		return_none: true
 	},
+
+	'地図名称検索': {
+		type: 'func',
+		josi: [['を','の']],
+		pure: true,
+		asyncFn: true,
+		fn: async function (name, sys) {
+			const url="https://msearch.gsi.go.jp/address-search/AddressSearch?q="+name;
+			const http=await sys.__exec('HTTP取得', [url, sys]);
+			const json=await sys.__exec('JSONデコード', [http, sys]);
+
+			const perfect=[];
+			const candidate=[];
+
+			json.forEach(item=>{
+				if(item["properties"]["title"]==name){
+					perfect.push(item["geometry"]["coordinates"].join(","));
+				}else if(item["properties"]["title"].indexOf(name)!=-1){
+					candidate.push(item["geometry"]["coordinates"].join(","));
+				}
+			});
+
+			if(perfect.length!=0){
+				return perfect;
+			}else{
+				return candidate;
+			}
+		}
+		
+	}
 
 }
 // モジュールのエクスポート(必ず必要)
