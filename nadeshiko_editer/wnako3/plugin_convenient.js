@@ -129,7 +129,7 @@ const plugin_convenient={
 			});
 
 			if(perfect.length!=0){
-				return perfect;
+				return [perfect[0]];
 			}else if(candidate.length==1){
 				return candidate;
 			}else{
