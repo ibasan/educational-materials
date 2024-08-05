@@ -52,7 +52,7 @@ window.addEventListener("load", ()=>{
 
 		].forEach(wnako_plugin_url=>{
 			let plugin_script=document.head.appendChild(document.createElement('script'));
-			plugin_script.src=wnako_plugin_url;
+			plugin_script.src=wnako_plugin_url+"?load_time="+Date.now();
 		});
 	}
 
