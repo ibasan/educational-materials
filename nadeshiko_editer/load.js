@@ -62,7 +62,9 @@ window.addEventListener("load", ()=>{
 			clearInterval(nako3_init_timer);
 
 			//「表示ログクリア」の動作を変更
-			navigator.nako3.setFunc("表示ログクリア", [], result_clear, true);
+			navigator.nako3.setFunc("表示ログクリア", [], ()=>{
+				document.getElementById('text_output').innerHTML="";
+			}, true);
 
 			//「表示」出力先、エラー出力時の動作を変更
 			navigator.nako3.logger.addListener('trace', (e) => {
