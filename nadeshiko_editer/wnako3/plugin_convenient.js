@@ -104,6 +104,34 @@ const plugin_convenient={
 		},
 		return_none: true
 	},
+	'リンク作成': {
+		type: 'func',
+		josi: [['で'],['の']],
+		pure: true,
+		fn: function (dom, url, sys){
+			//ref: https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object/384380#384380
+			const dom_check=((o)=>{
+				return (
+				typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+				o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+				);
+			})(dom);
+
+			if(dom_check){
+				sys.__addEvent(dom, 'click', ()=>{
+					open(url, "_blank");
+				}, null);
+				return dom;
+			}else{
+				const a=sys.__exec('DOM部品作成', ['a', sys]);
+				a.innerHTML=dom;
+				a.href=url;
+				a.target="_blank";
+				return a;
+			}
+
+		}
+	},
 
 	'地図名称検索': {
 		type: 'func',
