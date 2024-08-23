@@ -86,13 +86,13 @@ window.addEventListener("load", ()=>{
 
 		//リファレンス検索
 		const now_code=code.innerHTML.replaceAll(/「.*?」|《.*?》/g, "");
-		const find_key=defo_keys.filter(key=>now_code.indexOf(key)!=-1);
+		if(typeof navigator.nako3!=="undefined" && typeof navigator.nako3.lex!=="undefined"){
+			const find_key=navigator.nako3.lex(code.innerHTML).tokens.reduce((old,now)=>now.type=="func"?[...old,now.value]:old,[]);
 
-		if(!_.isEqual(old_find_key, find_key)){
-			old_find_key=find_key;
-			reference.innerHTML="";
-			find_key.forEach(key=>{
-				if(reference.innerText.indexOf(key)==-1){
+			if(!_.isEqual(old_find_key, find_key)){
+				old_find_key=find_key;
+				reference.innerHTML="";
+				find_key.forEach(key=>{
 					const click_div=reference.appendChild(document.createElement("div"));
 					click_div.textContent=key;
 					click_div.onclick=()=>{
@@ -105,8 +105,9 @@ window.addEventListener("load", ()=>{
 						}
 					}
 					click_div.classList.add("click_div");
-				}
-			});
+
+				});
+			}
 		}
 
 		//改行記号まで一度に削除した際に、原因不明のspanが生成される問題
@@ -521,7 +522,7 @@ window.addEventListener("load", ()=>{
 	let map_list;
 	let marker_list=[];
 	const map_init=setInterval(()=>{
-		if(L){
+		if(typeof L!=="undefined"){
 			clearInterval(map_init);
 			map_list=[L.map('pin_map'), L.map('map')];
 			map_list.forEach((e, index)=>{
