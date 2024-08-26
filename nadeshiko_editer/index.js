@@ -87,7 +87,7 @@ window.addEventListener("load", ()=>{
 		//リファレンス検索
 		const now_code=code.innerHTML.replaceAll(/「.*?」|《.*?》/g, "");
 		if(typeof navigator.nako3!=="undefined" && typeof navigator.nako3.lex!=="undefined"){
-			const find_key=navigator.nako3.lex(code.innerHTML).tokens.reduce((old,now)=>now.type=="func"?[...old,now.value]:old,[]);
+			const find_key=new Set(navigator.nako3.lex(code.innerHTML).tokens.reduce((old,now)=>now.type=="func"?[...old,now.value]:old,[]));
 
 			if(!_.isEqual(old_find_key, find_key)){
 				old_find_key=find_key;
