@@ -58,7 +58,7 @@ window.addEventListener("load", ()=>{
 
 
 	const nako3_init_timer=setInterval(()=>{
-		if(navigator.nako3){
+		if(navigator.nako3&&navigator.nako3.__v0.get("__pluginInfo").plugin_convenient){
 			clearInterval(nako3_init_timer);
 
 			//「表示ログクリア」の動作を変更
