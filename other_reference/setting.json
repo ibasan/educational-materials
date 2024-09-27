@@ -3,6 +3,6 @@
 	"start_time": 1715573346000,
 	"end_time": 1715574606000,
 	"setting_interval": 10,
-	"log_output_interval": 1,
+	"log_output_interval": 10,
 	"keydown_interval": 1
 }
