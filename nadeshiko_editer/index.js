@@ -93,6 +93,7 @@ window.addEventListener("load", ()=>{
 				old_find_key=find_key;
 				reference.innerHTML="";
 				find_key.forEach(key=>{
+					if(!wnako3_reference[key]){console.log(key);return;}
 					const click_div=reference.appendChild(document.createElement("div"));
 					click_div.textContent=key;
 					click_div.onclick=()=>{
