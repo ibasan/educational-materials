@@ -289,6 +289,7 @@ window.addEventListener("load", ()=>{
 		window.addEventListener("beforeunload", unload);
 	};
 	send_mail_auto_push.addEventListener("click", ()=>{
+		if(!confirm("いたずら防止のため、現在、宛先を兵庫教育大学内に制限しています。続行しますか？"))return;
 		code_auto_insert(
 			"<div>《キーワード》に「◯◯◯◯」を代入</div>"+
 			"<div>《本文》に「◯◯◯◯◯◯◯◯◯◯◯」を代入</div>"+
