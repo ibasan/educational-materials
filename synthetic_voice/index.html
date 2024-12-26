@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>サーモスタットについて</title>
+	<style type="text/css">
+		html{
+			background: #fffacd;
+		}
+		body{
+			width: 95%;
+			margin: auto;
+		}
+		body > div{
+			width: 100%;
+			height: 100%;
+			text-align: center;
+		}
+		video{
+			width: 100%;
+		}
+		video.fullscreen{
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+		}
+		#overlay{
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,0.8);
+			z-index: 9998;
+			pointer-events: none;
+			opacity: 0;
+		}
+		#overlay.show{
+			opacity: 1;
+		}
+		#sensitivity{
+			margin: 10px auto;
+			width: 70%;
+		}
+		#sensitivity > div{
+			display: grid;
+			grid-template-columns: repeat(7, 1fr);
+			grid-auto-rows: 40px;
+			margin-top: 3px;
+		}
+		.next, .introduction, #name{
+			font-size: 1.5rem;
+		}
+
+	</style>
+	<script type="text/javascript">
+		window.addEventListener("load", ()=>{
+			let counter=0;
+			const createLikertScale=(startLabel, endLabel)=>{
+				counter++;
+				const temp_div=document.getElementById("sensitivity").appendChild(document.createElement('div'));
+				const leftSpan=document.createElement('span');
+				leftSpan.textContent=startLabel;
+				temp_div.appendChild(leftSpan);
+				for (let i=1; i<=5; i++) {
+					const radio = document.createElement('input');
+					radio.type = 'radio';
+					radio.name = "question-"+counter;
+					radio.value = 5;
+					temp_div.appendChild(radio);
+				}
+				const rightSpan=document.createElement('span');
+				rightSpan.textContent=endLabel;
+				temp_div.appendChild(rightSpan);
+			}
+			const id=(()=>{
+				const temp_id=localStorage.getItem('ogu_UUID');
+				if(!temp_id){
+					const id=crypto.randomUUID();
+					localStorage.setItem('ogu_UUID', id);
+					return id;
+				}
+				return temp_id;
+			})();
+			const movie_id=(()=>{
+				const temp_id=localStorage.getItem('ogu_MOVIEID');
+				if(!temp_id){
+					const id=Math.floor(Math.random()*4);
+					localStorage.setItem('ogu_MOVIEID', id);
+					return id;
+				}
+				return temp_id;
+			})();
+			let last_div=(()=>{
+				const temp=localStorage.getItem('ogu_LASTDIV');
+				if(!temp){
+					localStorage.setItem('ogu_LASTDIV', 0);
+					return 0;
+				}
+				return temp;
+			})();
+			const main2=document.getElementById('main2');
+			const overlay=document.getElementById('overlay');
+			const movie=main2.getElementsByTagName('video')[0];
+			movie.src=[
+				"https://www.sangiin.go.jp/japanese/video/date/digest202105.mp4",
+				"https://www.sangiin.go.jp/japanese/video/date/annai202305.mp4",
+				"https://www.soumu.go.jp/main_content/000311477.mp4",
+				"https://www.soumu.go.jp/main_content/000311502.mp4"
+			][movie_id];
+			movie.controls=false;
+			movie.addEventListener("contextmenu",e=>e.preventDefault());
+			movie.addEventListener('ended', ()=>{
+				document.getElementById('movie_next').style.display="";
+				movie.click();
+			});
+			movie.addEventListener("click", e=>{
+				movie.classList.toggle('fullscreen');
+				overlay.classList.toggle('show');
+				if(movie.classList.contains('fullscreen')){
+					document.body.style.overflow='hidden';
+					movie.play();
+				}else{
+					document.body.style.overflow='';
+					movie.pause();
+				}
+			});
+
+			const mains=document.getElementsByClassName("main");
+			Array.from(mains).forEach((e,index)=>{
+				if(index!=last_div) e.style.display="none";
+			});
+
+			document.getElementById("last").addEventListener("click", (e)=>{
+				const sensitivity=document.getElementById('sensitivity');
+				const radios=sensitivity.querySelectorAll('input[type="radio"]');
+				const names=[...new Set([...radios].map(f=>f.name))];
+				const hasUnselected=names.some(name=>!sensitivity.querySelector(`input[name="${name}"]:checked`)
+				);
+
+				if(hasUnselected){
+					alert('未選択のラジオボタンがあります。全て選択してから再度、押してください。');
+					e.stopImmediatePropagation();
+					e.stopPropagation();
+				}else{
+					alert("ここにデータを送信する処理（現在実装中......）");
+				}
+			});
+
+			Array.from(document.getElementsByClassName("next")).forEach(e=>{
+				e.addEventListener("click", ()=>{
+					if(last_div<4){
+						mains[last_div].style.display="none";
+						last_div++;
+						localStorage.setItem('ogu_LASTDIV', last_div);
+						mains[last_div].style.display="block";
+					}
+				});
+			});
+
+			[
+				["好き","嫌い"],
+				["面白い","つまらない"]
+			].forEach(e=>{
+				createLikertScale(e[0], e[1])
+			});
+
+			
+		});
+	</script>
+</head>
+<body>
+	<button style="position: absolute; left: 0; bottom: 0" onclick="localStorage.removeItem('ogu_MOVIEID');localStorage.removeItem('ogu_LASTDIV');location.reload()">デバッグ用リセット</button>
+	<div id="main1" class="main">
+		<div class="introduction">
+			この調査は〇〇のために行う調査です。〇〇〇〇〇〇〇〇ここにリード文等〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇〇<br>
+			終了まで、約10分掛かります。<br>
+			また、この調査で得られた情報は、研究終了後、適切に廃棄します。<br><br><br>
+			本研究に関する問い合わせは、<a href="mailto:m24102g@hyogo-u.ac.jp">兵庫教育大学 修士課程 應供亮生</a>までお願いします。
+		</div>
+		<div class="input_items">
+			<input type="email" id="name" size="30" placeholder="メールアドレスを入力">
+			<button class="next">次へ</button>
+		</div>
+	</div>
+	<div id="main2" class="main">
+		<div class="introduction">
+			以下の動画を視聴してください（クリックで再生）。<br>
+			最後まで再生した後、表示される、次へボタンを押してください。<br>
+			※途中で再読み込み等をした場合は、始めからになります。注意してください。<br>
+		</div>
+		<div id="overlay"></div>
+		<video cntrolsList="nodownload noremoteplayback" disablepictureinpicture controls="false"></video>
+		<div class="input_items">
+			<button class="next" id="movie_next" style="display: none;">次へ</button>
+		</div>
+	</div>
+	<div id="main3" class="main">
+		<div class="introduction">
+			先ほどの動画を視聴して感じたことをお答えください。<br>
+		</div>
+		<div class="input_items" id="central_form">
+			<div id="sensitivity"></div>
+			<button class="next" id="last">次へ</button>
+		</div>
+	</div>
+	<div id="main4" class="main">
+		<div class="introduction">
+			これで調査は終わりです。ご協力、ありがとうございました。<br>
+		</div>
+	</div>
+</body>
+</html>
