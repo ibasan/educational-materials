@@ -182,7 +182,7 @@
 				.then(res => res.json())
 				.then(console.log)
 				.catch(console.error);
-
+				comp_form();
 			});
 
 			Array.from(document.getElementsByClassName("next")).forEach(e=>{
@@ -196,12 +196,15 @@
 				});
 			});
 
-			document.getElementById("go_form").href=[
-				"https://docs.google.com/forms/d/e/1FAIpQLSfHulCcgS0CnCI3mLc-x0XO7juPvV_IQwYAQ9HTfxgvjvH5gw/viewform?usp=pp_url&entry.968457226=",
-				"https://docs.google.com/forms/d/e/1FAIpQLScfZt7zCdauxquqyrOa2r4pYDC-XOr_yE6qvwKEQPBsvs34jw/viewform?usp=pp_url&entry.968457226=",
-				"https://docs.google.com/forms/d/e/1FAIpQLScXIY-ZR6T9PstSNDFLd5bDvdVOjxNCY7kivYiNXQlpxL6ZDQ/viewform?usp=pp_url&entry.968457226=",
-				"https://docs.google.com/forms/d/e/1FAIpQLSdugPtU8Vgz9OA-v0XwyP4OabFEsUPMY4niEOli1AVZD2M6Ow/viewform?usp=pp_url&entry.968457226="
-			][movie_id]+id;
+			const comp_form=()=>{
+				document.getElementById("go_form").href=[
+					"https://docs.google.com/forms/d/e/1FAIpQLSfHulCcgS0CnCI3mLc-x0XO7juPvV_IQwYAQ9HTfxgvjvH5gw/viewform?usp=pp_url&entry.968457226=",
+					"https://docs.google.com/forms/d/e/1FAIpQLScfZt7zCdauxquqyrOa2r4pYDC-XOr_yE6qvwKEQPBsvs34jw/viewform?usp=pp_url&entry.968457226=",
+					"https://docs.google.com/forms/d/e/1FAIpQLScXIY-ZR6T9PstSNDFLd5bDvdVOjxNCY7kivYiNXQlpxL6ZDQ/viewform?usp=pp_url&entry.968457226=",
+					"https://docs.google.com/forms/d/e/1FAIpQLSdugPtU8Vgz9OA-v0XwyP4OabFEsUPMY4niEOli1AVZD2M6Ow/viewform?usp=pp_url&entry.968457226="
+				][movie_id]+id;
+			};
+			comp_form();
 		});
 	</script>
 </head>
