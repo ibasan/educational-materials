@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>サーモスタットについて</title>
+	<title>動画に関する調査</title>
 	<style type="text/css">
 		html{
 			background: #fffacd;
@@ -17,6 +17,7 @@
 			width: 100%;
 			height: 100%;
 			text-align: center;
+			margin-bottom: 5%;
 		}
 		video:not(.fullscreen){
 			max-width: 100%;
@@ -73,6 +74,7 @@
 
 	</style>
 	<script type="text/javascript">
+		let lastTime=0;
 		window.addEventListener("load", ()=>{
 			let counter=0;
 			const createLikertScale=(startLabel, endLabel)=>{
@@ -131,6 +133,8 @@
 					movie.pause();
 				}
 			});
+			movie.addEventListener('timeupdate', ()=>lastTime=movie.currentTime);
+			movie.addEventListener('seeking', ()=>movie.currentTime=lastTime);
 
 			const mains=document.getElementsByClassName("main");
 			Array.from(mains).forEach((e,index)=>{
@@ -149,12 +153,13 @@
 					cancel(e);
 					return;
 				}
-				if(confirm("ランサーズIDは"+temp_id+"で宜しいですか？")){
-					id=temp_id;
-					localStorage.setItem('ogu_UUID', id);
-				}else{
+				if(!confirm("ランサーズIDは"+temp_id+"で宜しいですか？")){
 					cancel(e);
+					return;
 				}
+
+				id=temp_id;
+				localStorage.setItem('ogu_UUID', id);
 			});
 
 			Array.from(document.getElementsByClassName("next")).forEach(e=>{
@@ -178,18 +183,24 @@
 	</script>
 </head>
 <body>
-	<button style="position: absolute; left: 0; bottom: 0" onclick="localStorage.removeItem('ogu_MOVIEID');localStorage.removeItem('ogu_LASTDIV');localStorage.removeItem('ogu_UUID');location.reload();">デバッグ用リセット</button>
+	<button style="position: fixed; left: 0; bottom: 0" onclick="localStorage.removeItem('ogu_MOVIEID');localStorage.removeItem('ogu_LASTDIV');localStorage.removeItem('ogu_UUID');location.reload();">デバッグ用リセット</button>
 	<div id="main1" class="main">
-		<div class="introduction">
+		<div class="introduction" style="text-align: left;">
 			<h2>はじめに【必ずお読みください】</h2>
-			この調査は、学習動画の音声に対する感情を調査するものです。動画を視聴し、その後、Webフォームの質問にお答えください。質問はご自身が感じた通りお答えください。あなたの回答結果によって、あなたが不利益を被ることはありません。<br>
-			この調査で得られた情報は、統計的に処理し、個人が特定されない形で使用します。また、調査で得られた情報は、研究終了後、適切に廃棄します。<br>
-			本研究への参加ささやかではありますが
-			なお、本研究への参加の同意はいつでも撤回することが出来ます。その場合、あなたから得られたデータは削除され、研究または最終的な公表のために使用されることはありません。本研究への参加に対しての報酬を受け取ることは出来ませんが、それ以外のいかなるペナルティも、発生しません。
-			<br><br>
-			以上に同意いただける方はランサーズIDを入力の上、同意するボタンを押してください。<br>なお、本調査は終了まで、約10分掛かります。<br><br><br>
+			本研究は、学習動画の印象について検討することを目的としています。回答の所要時間はおよそ10分です。<br>
+			この研究への参加は任意です。<br>
+			この研究に参加することによって、あなたに直接的な便益はありませんが、得られたデータを分析することで、教育現場におけるより良い学習教材の開発等に寄与すると考えられています。<br>
+			参加については、あなたの自由な意思が尊重されます。<br>
+			研究に参加しないことによって、不利益な対応を受けることはありません。<br>
+			また、この研究への参加に伴い、健康被害等の危険や、痛み等の不快な状態、その他あなたに不利益となることが生じる可能性はありませんが、途中で回答をやめたくなった場合は、自由に辞退することができます（辞退される場合は、回答を中断して画面を閉じてください。その場合、途中まで回答された内容は分析対象とならず、破棄されます）。<br>
+			なお、本研究では、個人情報は収集いたしません。<br>
+			あなたの提供されたデータ、およびデータが記された資料は、この研究を遂行し、その後検証するために必要な範囲においてのみ利用いたします。<br>
+			この研究で得られた成果を専門の学会や学術雑誌などに発表する可能性がありますが、発表する場合は回答者の方のプライバシーに慎重に配慮しますので、個人を特定できる情報が公表されることはありません。<br>
+			以上をよく確認した上で、この研究に参加することに同意する場合は、下記にランサーズIDを入力の上，「同意する」ボタンを押して次に進んでください。
+			<br>
 			<small>本研究に関する問い合わせ先：<a href="mailto:m24102g@hyogo-u.ac.jp">兵庫教育大学 修士課程 應供亮生</a></small>
 		</div>
+		<br><br>
 		<div class="input_items">
 			<input type="email" id="name" size="30" placeholder="ランサーズのIDを入力（入力間違いに注意してください）">
 			<button class="next" id="mail_check">同意する</button>
@@ -199,10 +210,10 @@
 		<div class="introduction">
 			はじめに、以下の動画を視聴してください（クリックで再生）。<br>
 			最後まで再生した後、表示される、次へボタンを押してください。<br>
-			※途中で再読み込み等をした場合は、始めからになります。ご注意ください。<br>
+			※途中で再読み込み等をした場合は、初めからになります。ご注意ください。<br>
 		</div>
 		<div id="overlay"></div>
-		<video cntrolsList="nodownload noremoteplayback" disablepictureinpicture controls="false"></video>
+		<video cntrolsList="nodownload noremoteplayback" disablepictureinpicture playsinline controls="false"></video>
 		<div class="input_items">
 			<button class="next" id="movie_next" style="display: none;">次へ</button>
 		</div>
