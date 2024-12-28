@@ -74,7 +74,7 @@
 
 	</style>
 	<script type="text/javascript">
-		let lastTime=0;
+		let loadtime=new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
 		window.addEventListener("load", ()=>{
 			let counter=0;
 			const createLikertScale=(startLabel, endLabel)=>{
@@ -122,19 +122,22 @@
 				document.getElementById('movie_next').style.display="";
 				movie.click();
 			});
+			let movie_play_flag=false;
 			movie.addEventListener("click", e=>{
-				movie.classList.toggle('fullscreen');
-				overlay.classList.toggle('show');
-				if(movie.classList.contains('fullscreen')){
+				movie_play_flag=!movie_play_flag;
+
+				if(movie_play_flag){
+					movie.classList.add("fullscreen");
+					movie.classList.add("show");
 					document.body.style.overflow='hidden';
 					movie.play();
 				}else{
+					movie.classList.remove("fullscreen");
+					movie.classList.remove("show");
 					document.body.style.overflow='';
 					movie.pause();
 				}
 			});
-			movie.addEventListener('timeupdate', ()=>lastTime=movie.currentTime);
-			movie.addEventListener('seeking', ()=>movie.currentTime=lastTime);
 
 			const mains=document.getElementsByClassName("main");
 			Array.from(mains).forEach((e,index)=>{
@@ -160,6 +163,20 @@
 
 				id=temp_id;
 				localStorage.setItem('ogu_UUID', id);
+				const url = 'https://script.google.com/macros/s/AKfycbx2h5YcRrGOz8RHikFhvl7eBkFDNovb63eoPpkdh3_ARBmIpj-eRAjQmkCLbXJI7Vmc/exec';
+				const params = new URLSearchParams({
+					time: loadtime,
+					id: id,
+					ua: navigator.userAgent,
+					width: window.innerWidth,
+					height: window.innerHeight
+				});
+
+				fetch(url+"?"+params.toString())
+				.then(res => res.json())
+				.then(console.log)
+				.catch(console.error);
+
 			});
 
 			Array.from(document.getElementsByClassName("next")).forEach(e=>{
