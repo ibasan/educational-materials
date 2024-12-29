@@ -182,7 +182,7 @@
 				.then(res => res.json())
 				.then(console.log)
 				.catch(console.error);
-				comp_form();
+
 			});
 
 			Array.from(document.getElementsByClassName("next")).forEach(e=>{
@@ -196,19 +196,17 @@
 				});
 			});
 
-			const comp_form=()=>{
-				document.getElementById("go_form").href=[
-					"https://docs.google.com/forms/d/e/1FAIpQLSeDxBk0SZzbUAka8cZZwNCrxaZu8zmTjC8byBa0jw_VG0brrw/viewform?usp=pp_url&entry.968457226=",
-					"https://docs.google.com/forms/d/e/1FAIpQLScbx602E_15b_BL4mvtNetCbMKFRkj22vM2RUqR-bGLCkKjeQ/viewform?usp=pp_url&entry.968457226=",
-					"https://docs.google.com/forms/d/e/1FAIpQLSfdOTwoSARjSBiDc18_m4oopC92idHZvzWRzVTd9hJPbijsHQ/viewform?usp=pp_url&entry.968457226=",
-					"https://docs.google.com/forms/d/e/1FAIpQLScByoayVdqqfAeFpzxvu65mwTfZ-Xe_ls0gskRP14NEVhtsOw/viewform?usp=pp_url&entry.968457226="
-				][movie_id]+id;
-			};
-			comp_form();
+			document.getElementById("go_form").href=[
+				"https://docs.google.com/forms/d/e/1FAIpQLSfHulCcgS0CnCI3mLc-x0XO7juPvV_IQwYAQ9HTfxgvjvH5gw/viewform?usp=pp_url&entry.968457226=",
+				"https://docs.google.com/forms/d/e/1FAIpQLScfZt7zCdauxquqyrOa2r4pYDC-XOr_yE6qvwKEQPBsvs34jw/viewform?usp=pp_url&entry.968457226=",
+				"https://docs.google.com/forms/d/e/1FAIpQLScXIY-ZR6T9PstSNDFLd5bDvdVOjxNCY7kivYiNXQlpxL6ZDQ/viewform?usp=pp_url&entry.968457226=",
+				"https://docs.google.com/forms/d/e/1FAIpQLSdugPtU8Vgz9OA-v0XwyP4OabFEsUPMY4niEOli1AVZD2M6Ow/viewform?usp=pp_url&entry.968457226="
+			][movie_id]+id;
 		});
 	</script>
 </head>
 <body>
+	<button style="position: fixed; left: 0; bottom: 0" onclick="localStorage.removeItem('ogu_MOVIEID');localStorage.removeItem('ogu_LASTDIV');localStorage.removeItem('ogu_UUID');location.reload();">デバッグ用リセット</button>
 	<div id="main1" class="main">
 		<div class="introduction" style="text-align: left;">
 			<h2>はじめに【必ずお読みください】</h2>
@@ -233,7 +231,7 @@
 	</div>
 	<div id="main2" class="main">
 		<div class="introduction">
-			はじめに、以下の動画を視聴してください。クリックまたはタップで再生します。もう一度クリックまたはタップすると一時停止します。<br>
+			はじめに、以下の動画を視聴してください（クリックで再生）。<br>
 			最後まで再生した後、表示される、次へボタンを押してください。<br>
 			※途中で再読み込み等をした場合は、初めからになります。ご注意ください。<br>
 		</div>
@@ -249,6 +247,10 @@
 		<div class="introduction">
 			以下のリンクを押して、質問に回答してください。<br><br>
 			<a id="go_form">質問フォームへ</a>
+			<div style="border: solid green 5px;">
+				デバッグ情報<br>
+				現在は1つのフォームに設定されていますが，本番環境では再生された動画に応じてURLが切り替わります。
+			</div>
 		</div>
 	</div>
 	<div id="main4" class="main">
