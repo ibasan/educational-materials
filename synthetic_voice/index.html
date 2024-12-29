@@ -134,12 +134,12 @@
 
 				if(movie_play_flag){
 					movie.classList.add("fullscreen");
-					movie.classList.add("show");
+					overlay.classList.add("show");
 					document.body.style.overflow='hidden';
 					movie.play();
 				}else{
 					movie.classList.remove("fullscreen");
-					movie.classList.remove("show");
+					overlay.classList.remove("show");
 					document.body.style.overflow='';
 					movie.pause();
 				}
