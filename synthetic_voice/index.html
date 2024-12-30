@@ -98,7 +98,7 @@
 			const movie_id=(()=>{
 				const temp_id=localStorage.getItem('ogu_MOVIEID');
 				if(!temp_id){
-					const id=Math.floor(Math.random()*4);
+					const id=[0,3,4][Math.floor(Math.random()*5)];
 					localStorage.setItem('ogu_MOVIEID', id);
 					return id;
 				}
@@ -124,9 +124,10 @@
 			});
 			document.getElementById("credit").textContent=[
 				"VOICEBOX: ずんだもん",
-				"VoiceVox:Nemo",
-				"VoiceVox:Nemo",
-				""
+				"VoiceVox:Nemo", //男性声
+				"VoiceVox:Nemo", //女性声
+				"", //人間
+				"" //まんじゅう
 			][movie_id];
 			let movie_play_flag=false;
 			movie.addEventListener("click", e=>{
@@ -201,7 +202,8 @@
 					"https://docs.google.com/forms/d/e/1FAIpQLSeDxBk0SZzbUAka8cZZwNCrxaZu8zmTjC8byBa0jw_VG0brrw/viewform?usp=pp_url&entry.968457226=",
 					"https://docs.google.com/forms/d/e/1FAIpQLScbx602E_15b_BL4mvtNetCbMKFRkj22vM2RUqR-bGLCkKjeQ/viewform?usp=pp_url&entry.968457226=",
 					"https://docs.google.com/forms/d/e/1FAIpQLSfdOTwoSARjSBiDc18_m4oopC92idHZvzWRzVTd9hJPbijsHQ/viewform?usp=pp_url&entry.968457226=",
-					"https://docs.google.com/forms/d/e/1FAIpQLScByoayVdqqfAeFpzxvu65mwTfZ-Xe_ls0gskRP14NEVhtsOw/viewform?usp=pp_url&entry.968457226="
+					"https://docs.google.com/forms/d/e/1FAIpQLScByoayVdqqfAeFpzxvu65mwTfZ-Xe_ls0gskRP14NEVhtsOw/viewform?usp=pp_url&entry.968457226=",
+					"https://docs.google.com/forms/d/e/1FAIpQLScYEP3KTn2xaIgUcXHZVV_cvev1HL1cUSei3o1ZCvun6mlL_Q/viewform?usp=pp_url&entry.968457226="
 				][movie_id]+id;
 			};
 			comp_form();
@@ -212,22 +214,23 @@
 	<div id="main1" class="main">
 		<div class="introduction" style="text-align: left;">
 			<h2>はじめに【必ずお読みください】</h2>
-			本研究は、学習動画の印象について検討することを目的としています。回答の所要時間はおよそ10分です。<br>
+			本研究は、学習動画の印象について検討することを目的としています。<br>
 			この研究への参加は任意です。<br>
 			この研究に参加することによって、あなたに直接的な便益はありませんが、得られたデータを分析することで、教育現場におけるより良い学習教材の開発等に寄与すると考えられています。<br>
 			参加については、あなたの自由な意思が尊重されます。<br>
 			研究に参加しないことによって、不利益な対応を受けることはありません。<br>
 			また、この研究への参加に伴い、健康被害等の危険や、痛み等の不快な状態、その他あなたに不利益となることが生じる可能性はありませんが、途中で回答をやめたくなった場合は、自由に辞退することができます（辞退される場合は、回答を中断して画面を閉じてください。その場合、途中まで回答された内容は分析対象とならず、破棄されます）。<br>
-			なお、本研究では、個人情報は収集いたしません。<br>
+			なお、本研究では、個人情報は収集いたしません（ランサーズID（ユーザー名）をお尋ねしますが，こちらは報酬のお支払いの目的でのみ使用いたします）。<br>
 			あなたの提供されたデータ、およびデータが記された資料は、この研究を遂行し、その後検証するために必要な範囲においてのみ利用いたします。<br>
 			この研究で得られた成果を専門の学会や学術雑誌などに発表する可能性がありますが、発表する場合は回答者の方のプライバシーに慎重に配慮しますので、個人を特定できる情報が公表されることはありません。<br>
-			以上をよく確認した上で、この研究に参加することに同意する場合は、下記にランサーズIDを入力の上，「同意する」ボタンを押して次に進んでください。
+			以上をよく確認した上で、この研究に参加することに同意する場合は、下記にランサーズID（ユーザー名）を入力の上，「同意する」ボタンを押して次に進んでください（ランサーズID（ユーザー名）が不明な方は下記ページの方法で確認してください）。<br>
+			<a href="https://www.lancers.jp/faq/A1021/487">https://www.lancers.jp/faq/A1021/487</a>
 			<br>
 			<small>本研究に関する問い合わせ先：<a href="mailto:m24102g@hyogo-u.ac.jp">兵庫教育大学 修士課程 應供亮生</a></small>
 		</div>
 		<br><br>
 		<div class="input_items">
-			<input type="email" id="name" size="30" placeholder="ランサーズのIDを入力（入力間違いに注意してください）">
+			<input type="email" id="name" size="30" placeholder="ランサーズIDを入力（入力間違いに注意してください）">
 			<button class="next" id="mail_check">同意する</button>
 		</div>
 	</div>
