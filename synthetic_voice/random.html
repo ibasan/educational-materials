@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>乱数確認</title>
+	<script type="text/javascript">
+		window.onload=()=>{
+			let all=[0,0,0];
+			let all_counter=0;
+			add_button.addEventListener("click", ()=>{
+				let counter=0;
+				let timer=setInterval(()=>{
+					if(counter>=100){clearInterval(timer); return;}
+					counter++;
+					
+					let select=Math.floor(Math.random()*3);
+					all[select]++; all_counter++;
+					document.getElementById('no'+select).textContent=all[select]+"人";
+					document.getElementById('no_all').textContent=all_counter+"人";
+				}, 50);
+			});
+			Math.floor(Math.random()*3)
+		};
+	</script>
+</head>
+<body style="font-size: 1.5rem; background: #00ff7f;">
+	<h1>何人割り当てられるかシミュレーション</h1>
+	ずんだもん：<span id="no0">0人</span><br>
+	應供さん：<span id="no1">0人</span><br>
+	ゆっくり：<span id="no2">0人</span><br>
+	合計：<span id="no_all">0人</span><br>
+	<br>
+	<button id="add_button" style="width: 300px; height: 3rem;">100人追加する</button><br><br>
+	<small>※再読み込みでリセット</small>
+</body>
+</html>

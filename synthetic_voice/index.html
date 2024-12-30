@@ -75,8 +75,57 @@
 	</style>
 	<script type="text/javascript">
 		let loadtime=new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-		window.addEventListener("load", ()=>{
+		const url = 'https://script.google.com/macros/s/AKfycbx2h5YcRrGOz8RHikFhvl7eBkFDNovb63eoPpkdh3_ARBmIpj-eRAjQmkCLbXJI7Vmc/exec';
+
+		
+
+		window.addEventListener("load", async ()=>{
+			//非表示にする処理
+			const mains=document.getElementsByClassName("main");
+			Array.from(mains).forEach((e,index)=>{
+				e.style.display="none";
+			});
+
+			let last_div=(()=>{
+				const temp=localStorage.getItem('ogu_LASTDIV');
+				if(!temp){
+					localStorage.setItem('ogu_LASTDIV', 0);
+					return 0;
+				}
+				return temp;
+			})();
+			const goto_next=()=>{
+				if(last_div<4){
+					mains[last_div].style.display="none";
+					last_div++;
+					localStorage.setItem('ogu_LASTDIV', last_div);
+					mains[last_div].style.display="block";
+				}
+			};
+
+			//何番目の来場者か取得する機能
+			const dry_params = new URLSearchParams({
+				dryrun: 1
+			});
+
+			let temp_ogu_MOVIEID=localStorage.getItem('ogu_MOVIEID');
+			if(temp_ogu_MOVIEID===null){
+				document.getElementById("main0").style.display="block";
+				const res=await fetch(url+"?"+dry_params.toString());
+				const data=await res.json();
+				console.log(data);
+				temp_ogu_MOVIEID=[0,3,4][data.result%3];
+				localStorage.setItem('ogu_MOVIEID', temp_ogu_MOVIEID);
+				last_div=0;
+			}
+			if(last_div<1){
+				goto_next();
+			}
+			const movie_id=temp_ogu_MOVIEID-0;
+
 			let counter=0;
+
+			
 			const createLikertScale=(startLabel, endLabel)=>{
 				counter++;
 				const temp_div=document.getElementById("sensitivity").appendChild(document.createElement('div'));
@@ -95,23 +144,10 @@
 				temp_div.appendChild(rightSpan);
 			}
 			let id=localStorage.getItem('ogu_UUID')||"";
-			const movie_id=(()=>{
-				const temp_id=localStorage.getItem('ogu_MOVIEID');
-				if(!temp_id){
-					const id=[0,3,4][Math.floor(Math.random()*3)];
-					localStorage.setItem('ogu_MOVIEID', id);
-					return id;
-				}
-				return temp_id;
-			})()-0;
-			let last_div=(()=>{
-				const temp=localStorage.getItem('ogu_LASTDIV');
-				if(!temp){
-					localStorage.setItem('ogu_LASTDIV', 0);
-					return 0;
-				}
-				return temp;
-			})();
+			
+			//前回の復元処理
+			mains[last_div].style.display="block";
+
 			const main2=document.getElementById('main2');
 			const overlay=document.getElementById('overlay');
 			const movie=main2.getElementsByTagName('video')[0];
@@ -146,10 +182,7 @@
 				}
 			});
 
-			const mains=document.getElementsByClassName("main");
-			Array.from(mains).forEach((e,index)=>{
-				if(index!=last_div) e.style.display="none";
-			});
+			
 
 			document.getElementById("mail_check").addEventListener("click", e=>{
 				const cancel=f=>{
@@ -170,7 +203,7 @@
 
 				id=temp_id;
 				localStorage.setItem('ogu_UUID', id);
-				const url = 'https://script.google.com/macros/s/AKfycbx2h5YcRrGOz8RHikFhvl7eBkFDNovb63eoPpkdh3_ARBmIpj-eRAjQmkCLbXJI7Vmc/exec';
+				
 				const params = new URLSearchParams({
 					time: loadtime,
 					id: id,
@@ -188,12 +221,7 @@
 
 			Array.from(document.getElementsByClassName("next")).forEach(e=>{
 				e.addEventListener("click", ()=>{
-					if(last_div<4){
-						mains[last_div].style.display="none";
-						last_div++;
-						localStorage.setItem('ogu_LASTDIV', last_div);
-						mains[last_div].style.display="block";
-					}
+					goto_next();
 				});
 			});
 
@@ -211,6 +239,12 @@
 	</script>
 </head>
 <body>
+	<div id="main0" class="main">
+		現在読み込み中です...<br>
+		<span style="font-size: small;">
+			（60秒経ってもこの画面が切り替わらない場合は、再読み込みするか、電波の良い場所に移動してください）
+		</span>
+	</div>
 	<div id="main1" class="main">
 		<div class="introduction" style="text-align: left;">
 			<h2>はじめに【必ずお読みください】</h2>
@@ -220,10 +254,10 @@
 			参加については、あなたの自由な意思が尊重されます。<br>
 			研究に参加しないことによって、不利益な対応を受けることはありません。<br>
 			また、この研究への参加に伴い、健康被害等の危険や、痛み等の不快な状態、その他あなたに不利益となることが生じる可能性はありませんが、途中で回答をやめたくなった場合は、自由に辞退することができます（辞退される場合は、回答を中断して画面を閉じてください。その場合、途中まで回答された内容は分析対象とならず、破棄されます）。<br>
-			なお、本研究では、個人情報は収集いたしません（ランサーズID（ユーザー名）をお尋ねしますが、こちらは報酬のお支払いの目的でのみ使用いたします）。<br>
+			なお、本研究では、個人情報は収集いたしません（ランサーズID（ユーザー名）をお尋ねしますが，こちらは報酬のお支払いの目的でのみ使用いたします）。<br>
 			あなたの提供されたデータ、およびデータが記された資料は、この研究を遂行し、その後検証するために必要な範囲においてのみ利用いたします。<br>
 			この研究で得られた成果を専門の学会や学術雑誌などに発表する可能性がありますが、発表する場合は回答者の方のプライバシーに慎重に配慮しますので、個人を特定できる情報が公表されることはありません。<br>
-			以上をよく確認した上で、この研究に参加することに同意する場合は、下記にランサーズID（ユーザー名）を入力の上、「同意する」ボタンを押して次に進んでください（ランサーズID（ユーザー名）が不明な方は下記ページの方法で確認してください）。<br>
+			以上をよく確認した上で、この研究に参加することに同意する場合は、下記にランサーズID（ユーザー名）を入力の上，「同意する」ボタンを押して次に進んでください（ランサーズID（ユーザー名）が不明な方は下記ページの方法で確認してください）。<br>
 			<a href="https://www.lancers.jp/faq/A1021/487">https://www.lancers.jp/faq/A1021/487</a>
 			<br><br>
 			<small>本研究に関する問い合わせ先：<a href="mailto:m24102g@hyogo-u.ac.jp">兵庫教育大学 修士課程 應供亮生</a></small>
