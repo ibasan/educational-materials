@@ -98,7 +98,7 @@
 			const movie_id=(()=>{
 				const temp_id=localStorage.getItem('ogu_MOVIEID');
 				if(!temp_id){
-					const id=[0,3,4][Math.floor(Math.random()*5)];
+					const id=[0,3,4][Math.floor(Math.random()*3)];
 					localStorage.setItem('ogu_MOVIEID', id);
 					return id;
 				}
