@@ -204,18 +204,25 @@
 				id=temp_id;
 				localStorage.setItem('ogu_UUID', id);
 				
-				const params = new URLSearchParams({
-					time: loadtime,
-					id: id,
-					ua: navigator.userAgent,
-					width: window.innerWidth,
-					height: window.innerHeight
-				});
-
-				fetch(url+"?"+params.toString())
+				fetch('https://ipinfo.io?callback')
 				.then(res => res.json())
-				.then(console.log)
-				.catch(console.error);
+				.then(json => {
+					const params = new URLSearchParams({
+						time: loadtime,
+						id: id,
+						ua: navigator.userAgent,
+						width: window.innerWidth,
+						height: window.innerHeight,
+						ip: json.ip
+					});
+
+					fetch(url+"?"+params.toString())
+					.then(res2 => res2.json())
+					.then(console.log)
+					.catch(console.error);
+				})
+
+				
 				comp_form();
 			});
 
