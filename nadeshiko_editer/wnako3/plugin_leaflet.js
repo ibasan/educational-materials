@@ -113,6 +113,29 @@ const Plugin_leaflet={
 			return L.marker([lat, lng]).addTo(mymap);
 		}
 	},
+	"独自ピン設置":{
+		type: 'func',
+		josi: [['の'],['で'],['に']],
+		fn: function (mymap, pin_url, latlng, sys) {
+			let lat=34.91268472990215;
+			let lng=134.9806876365492;
+			if(typeof latlng === 'string'){
+				[lat, lng]=latlng.split(/[:：,，、\s+]/);
+			}else if(Array.isArray(latlng)){
+				lat=latlng[0];
+				lng=latlng[1];
+			}else{
+				return false;
+			}
+
+			const icon=L.icon({
+				iconUrl: "{{ url('"+pin_url+"') }}",
+				iconSize: [21, 21],
+				iconAnchor: [10.5, 10.5]
+			});
+			return L.marker([lat, lng],{icon:icon}).addTo(mymap);
+		}
+	},
 
 	"ピンクリック時表示": {
 		type: 'func',
