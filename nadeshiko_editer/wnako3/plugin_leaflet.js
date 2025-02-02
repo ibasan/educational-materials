@@ -128,11 +128,16 @@ const Plugin_leaflet={
 				return false;
 			}
 
-			const icon=L.icon({
-				iconUrl: "{{ url('"+pin_url+"') }}",
-				iconSize: [21, 21],
-				iconAnchor: [10.5, 10.5]
-			});
+			let icon;
+			if(typeof pin_url==="string"){
+				icon=L.icon({
+					iconUrl: pin_url,
+					iconSize: [50, 50],
+					iconAnchor: [10.5, 10.5]
+				});
+			}else{
+				icon=L.icon(pin_url);
+			}
 			return L.marker([lat, lng],{icon:icon}).addTo(mymap);
 		}
 	},
