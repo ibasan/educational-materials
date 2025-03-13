@@ -48,12 +48,41 @@
       maxZoom: 18
     }).addTo(map);
 
-    // Load KML file using Leaflet Omnivore
-    // Replace 'path/to/your.kml' with an actual path or URL to your KML file
-    const kmlFiles = ['a.kml','b.kml','c.kml','d.kml','e.kml','f.kml','g.kml','h.kml','i.kml','j.kml'];
-    kmlFiles.forEach(file => {
-      omnivore.kml(file).addTo(map);
+    L.control.scale({
+      position: 'bottomleft',
+      metric: true,
+      imperial: false
+    }).addTo(map);
+
+    const kmlLayers = {
+      'a.kml': omnivore.kml('a.kml'),
+      'b.kml': omnivore.kml('b.kml'),
+      'c.kml': omnivore.kml('c.kml'),
+      'd.kml': omnivore.kml('d.kml'),
+      'e.kml': omnivore.kml('e.kml'),
+      'f.kml': omnivore.kml('f.kml'),
+      'g.kml': omnivore.kml('g.kml'),
+      'h.kml': omnivore.kml('h.kml'),
+      'i.kml': omnivore.kml('i.kml'),
+      'j.kml': omnivore.kml('j.kml')
+    };
+
+    // Overlays object for layer control
+    // Key = label to display in layer control, Value = KML layer
+    const overlays = {};
+    Object.keys(kmlLayers).forEach(fileName => {
+      overlays[fileName] = kmlLayers[fileName];
     });
+
+    // By default, only f.kml is displayed
+    kmlLayers['f.kml'].addTo(map);
+
+    // Create layer control with overlays
+    // Default position is top-right in Leaflet
+    L.control.layers(null, overlays, {
+      position: 'topright',
+      collapsed: false // expand by default, set to true if you want a collapsed UI
+    }).addTo(map);
 
   </script>
 </body>
