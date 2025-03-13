@@ -2,14 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Leaflet KML Example (GSI Maps)</title>
+  <title>Leaflet KML Example - Hide Instead of Remove, Fully Disable Click</title>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
   <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <!-- Leaflet Omnivore for KML support -->
   <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
 
@@ -25,65 +23,250 @@
       height: 100%;
       position: relative;
     }
-    /* Make only the tile images grayscale so that controls and markers remain colored */
+    /* Make only the tile images grayscale */
     #map .leaflet-tile {
       filter: grayscale(95%);
     }
   </style>
 </head>
 <body>
-  <div id="map"></div>
+<div id="map"></div>
 
-  <script>
-    // Initialize the map with canvas as preferred renderer
-    const map = L.map('map', {
-      preferCanvas: true,
-      center: [34.912983026075565, 134.98064731769944],
-      zoom: 15
+<script>
+  // Initialize map
+  const map = L.map('map', {
+    preferCanvas: true,
+    center: [34.912983026075565, 134.98064731769944],
+    zoom: 15
+  });
+
+  // Base tile
+  L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+    attribution:
+      'Map data © <a href="https://maps.gsi.go.jp/">国土地理院</a>' +
+      ' , © <a href="https://www.google.com/maps/d/edit?mid=1cgEJtF0YnMcf7ESO9rZo1CCSWJcgkF0&usp=sharing">松尾 豪</a>',
+    maxZoom: 18
+  }).addTo(map);
+
+  // Scale
+  L.control.scale({ position: 'bottomleft', metric: true, imperial: false }).addTo(map);
+
+  // Color interpolation
+  function interpolateColor(colorStart, colorEnd, fraction) {
+    function hexToRgb(hex) {
+      hex = hex.replace(/^#/, '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return [r, g, b];
+    }
+    function rgbToHex(r, g, b) {
+      const toHex = v => v.toString(16).padStart(2, '0');
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+    const start = hexToRgb(colorStart);
+    const end = hexToRgb(colorEnd);
+    const r = Math.round(start[0] + (end[0] - start[0]) * fraction);
+    const g = Math.round(start[1] + (end[1] - start[1]) * fraction);
+    const b = Math.round(start[2] + (end[2] - start[2]) * fraction);
+    return rgbToHex(r, g, b);
+  }
+
+  // We parse the line name by splitting on underscore or space
+  // searching for an item containing kV or KV or kv
+  function getGradientColorFromVoltage(name) {
+    const tokens = name.split(/[ _]+/);
+    let voltageStr = null;
+    for (let token of tokens) {
+      const match = token.match(/^(\d+)(?:k|K)(?:v|V)$/);
+      if (match) {
+        voltageStr = match[1];
+        break;
+      }
+    }
+    if (!voltageStr) {
+      return '#000000';
+    }
+    let voltage = parseInt(voltageStr, 10);
+    if (isNaN(voltage)) return '#000000';
+    if (voltage < 22) voltage = 22;
+    if (voltage > 500) voltage = 500;
+    const fraction = (voltage - 22) / (500 - 22);
+    return interpolateColor('#0000FF', '#FF0000', fraction);
+  }
+
+  // createSingleKmlGroup => store references
+  function createSingleKmlGroup(url) {
+    const group = L.featureGroup();
+    group._layersAll = [];
+
+    const kmlLayer = omnivore.kml(url);
+    kmlLayer.on('ready', () => {
+      kmlLayer.eachLayer(layer => {
+        group._layersAll.push(layer);
+        group.addLayer(layer);
+
+        const props = layer.feature && layer.feature.properties;
+        if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
+          let weight = 8;
+          let color = '#0000FF';
+          if (props && props.name) {
+            color = getGradientColorFromVoltage(props.name);
+
+            // if 500 => bringToFront, if 22 => bringToBack
+            const tokens = props.name.split(/[ _]+/);
+            for (let token of tokens) {
+              const m = token.match(/^(\d+)(?:k|K)(?:v|V)$/);
+              if (m) {
+                let lineV = parseInt(m[1], 10);
+                if (lineV === 500) {
+                  layer.bringToFront();
+                } else if (lineV === 22) {
+                  layer.bringToBack();
+                }
+              }
+            }
+          }
+          // make line interactive by default
+          layer.setStyle({ weight, opacity: 0.8, color, interactive: true });
+          if (props && props.name) {
+            layer.on('click', e => {
+              L.popup().setLatLng(e.latlng).setContent(props.name).openOn(map);
+            });
+          }
+        } else if (layer instanceof L.Marker) {
+          if (props && props.name) {
+            layer.on('click', e => {
+              L.popup().setLatLng(e.latlng).setContent(props.name).openOn(map);
+            });
+          }
+        }
+      });
     });
 
-    // Add GSI standard tile layer
-    L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-      attribution: 'Map data © <a href="https://maps.gsi.go.jp/">国土地理院</a> , © <a href="https://www.google.com/maps/d/edit?mid=1cgEJtF0YnMcf7ESO9rZo1CCSWJcgkF0&usp=sharing">松尾 豪</a>',
-      maxZoom: 18
-    }).addTo(map);
+    return group;
+  }
 
-    L.control.scale({
-      position: 'bottomleft',
-      metric: true,
-      imperial: false
-    }).addTo(map);
+  // pointer events on/off
+  function disablePointerEvents(layer) {
+    if (layer._path) {
+      layer._path.style.pointerEvents = 'none';
+    }
+    if (layer._icon) {
+      layer._icon.style.pointerEvents = 'none';
+    }
+  }
 
-    const kmlLayers = {
-      'a.kml': omnivore.kml('a.kml'),
-      'b.kml': omnivore.kml('b.kml'),
-      'c.kml': omnivore.kml('c.kml'),
-      'd.kml': omnivore.kml('d.kml'),
-      'e.kml': omnivore.kml('e.kml'),
-      'f.kml': omnivore.kml('f.kml'),
-      'g.kml': omnivore.kml('g.kml'),
-      'h.kml': omnivore.kml('h.kml'),
-      'i.kml': omnivore.kml('i.kml'),
-      'j.kml': omnivore.kml('j.kml')
-    };
+  function enablePointerEvents(layer) {
+    if (layer._path) {
+      layer._path.style.pointerEvents = '';
+    }
+    if (layer._icon) {
+      layer._icon.style.pointerEvents = '';
+    }
+  }
 
-    // Overlays object for layer control
-    // Key = label to display in layer control, Value = KML layer
-    const overlays = {};
-    Object.keys(kmlLayers).forEach(fileName => {
-      overlays[fileName] = kmlLayers[fileName];
+  // setGroupVisibility => show/hide + pointer events
+  function setGroupVisibility(group, visible) {
+    if (!group._layersAll) return;
+    group._layersAll.forEach(layer => {
+      if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
+        // line or polygon
+        if (visible) {
+          layer.setStyle({ opacity: 0.8, fillOpacity: 0.2, interactive: true });
+          enablePointerEvents(layer);
+        } else {
+          layer.setStyle({ opacity: 0, fillOpacity: 0, interactive: false });
+          disablePointerEvents(layer);
+        }
+      }
+      else if (layer instanceof L.Marker) {
+        if (visible) {
+          layer.setOpacity(1);
+          if (layer._icon) layer._icon.style.pointerEvents = '';
+        } else {
+          layer.setOpacity(0);
+          if (layer._icon) layer._icon.style.pointerEvents = 'none';
+        }
+      }
     });
+  }
 
-    // By default, only f.kml is displayed
-    kmlLayers['f.kml'].addTo(map);
+  ////////////////////////////////////////////////////
+  // KML definitions
+  ////////////////////////////////////////////////////
 
-    // Create layer control with overlays
-    // Default position is top-right in Leaflet
-    L.control.layers(null, overlays, {
-      position: 'topright',
-      collapsed: false // expand by default, set to true if you want a collapsed UI
-    }).addTo(map);
+  const kmlGroups = {
+    '北海道電力': createSingleKmlGroup('https://github.kasumigaura.work/power_KML/a.kml'),
+    '東北電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/b.kml'),
+    '東京電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/c.kml'),
+    '中部電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/d.kml'),
+    '北陸電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/e.kml'),
+    '関西電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/f.kml'),
+    '中国電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/g.kml'),
+    '四国電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/h.kml'),
+    '九州電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/i.kml'),
+    '沖縄電力':   createSingleKmlGroup('https://github.kasumigaura.work/power_KML/j.kml')
+  };
 
-  </script>
+  // Convert to baseLayers => radio
+  const baseLayers = {};
+  Object.keys(kmlGroups).forEach(label => {
+    baseLayers[label] = kmlGroups[label];
+  });
+
+  // default => "関西電力"
+  let activeBaseLayerName = '関西電力';
+  kmlGroups[activeBaseLayerName].addTo(map);
+
+  const layerControl = L.control.layers(baseLayers, null, {
+    position: 'topright',
+    collapsed: false
+  }).addTo(map);
+
+  // zKml => fallback for zoom<10
+  const zKml = createSingleKmlGroup('https://github.kasumigaura.work/power_KML/z.kml');
+  zKml.addTo(map);
+  setGroupVisibility(zKml, false);
+
+  ////////////////////////////////////////////////////
+  // baseLayerChange => only if zoom>=10
+  ////////////////////////////////////////////////////
+  map.on('baselayerchange', e => {
+    const z = map.getZoom();
+    if (z >= 10) {
+      // hide old
+      const oldGrp = kmlGroups[activeBaseLayerName];
+      setGroupVisibility(oldGrp, false);
+
+      activeBaseLayerName = e.name;
+      const newGrp = kmlGroups[e.name];
+      setGroupVisibility(newGrp, true);
+    } else {
+      // if zoom<10 => also hide newly chosen
+      const newGrp = kmlGroups[e.name];
+      setGroupVisibility(newGrp, false);
+      activeBaseLayerName = e.name;
+    }
+  });
+
+  ////////////////////////////////////////////////////
+  // zoomend => if zoom<10 => hide base, show zKml
+  // else => show base, hide zKml
+  ////////////////////////////////////////////////////
+  map.on('zoomend', () => {
+    const z = map.getZoom();
+    if (z < 10) {
+      const activeGrp = kmlGroups[activeBaseLayerName];
+      setGroupVisibility(activeGrp, false);
+
+      setGroupVisibility(zKml, true);
+    } else {
+      setGroupVisibility(zKml, false);
+      const activeGrp = kmlGroups[activeBaseLayerName];
+      setGroupVisibility(activeGrp, true);
+    }
+  });
+</script>
 </body>
 </html>
