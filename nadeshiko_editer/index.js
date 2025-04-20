@@ -1,5 +1,6 @@
 let replace_flag=true;
-let old_find_key={};
+let old_find_key={size: false};
+let savedRange;
 
 const code_getText=()=>{
 	let code_innerText="";
@@ -31,14 +32,17 @@ window.addEventListener("load", ()=>{
 			target.style.width="";
 		}, 5*1000);
 	};
-	const code_insert=data=>{
+
+
+	const code_insert=(data, load_range=false)=>{
 		//挿入処理
 		const node_spliter="【DO NOT EDIT】この文字が表示された場合は、管理者にご連絡ください【LONGIC】";
 		const split_data=data.replace(/\r\n|\n|\r/gu, node_spliter);
-		const selection=window.getSelection();
+		let selection=window.getSelection();
+
 		if(!selection || !selection.rangeCount) return;
 		selection.deleteFromDocument();
-		const range=selection.getRangeAt(0);
+		let range=load_range?savedRange:selection.getRangeAt(0);
 		range.insertNode(document.createTextNode(split_data));
 
 		//カーソルの現時点の位置を取得
@@ -56,12 +60,16 @@ window.addEventListener("load", ()=>{
 			}
 		});
 
+
 		//改行を置き換え
 		code.innerHTML=code.innerHTML.replaceAll(node_spliter, "</div><div>");
 
 		//カーソルの位置を戻す
 		const code_children=code.childNodes;
 		const target_node=code_children[code_children.length - node_after_counter].childNodes[0];
+		if(data=="《》"){
+			now_node_after_counter++;
+		}
 		if(target_node){
 			range.setStart(target_node, target_node.length - now_node_after_counter);
 			range.setEnd(target_node, target_node.length - now_node_after_counter);
@@ -69,12 +77,21 @@ window.addEventListener("load", ()=>{
 			range.setStart(code_children[code_children.length - node_after_counter], 0);
 			range.setEnd(code_children[code_children.length - node_after_counter], 0);
 		}
+		code.focus();
 
 	};
 
 	const unload=(event)=>{
 		event.preventDefault();
 		event.returnValue="";
+	};
+
+	//変数挿入時のカーソル位置保存用
+	const saveSelection=()=>{
+		const selection=window.getSelection();
+		if(selection.rangeCount){
+			savedRange=selection.getRangeAt(0);
+		}
 	};
 
 	const defo_keys=Object.keys(wnako3_reference).sort((a,b)=>a.length>b.length?1:-1);
@@ -87,27 +104,34 @@ window.addEventListener("load", ()=>{
 		//リファレンス検索
 		const now_code=code.innerHTML.replaceAll(/「.*?」|《.*?》/g, "");
 		if(typeof navigator.nako3!=="undefined" && typeof navigator.nako3.lex!=="undefined"){
-			const find_key=new Set(navigator.nako3.lex(code.innerHTML).tokens.reduce((old,now)=>now.type=="func"?[...old,now.value]:old,[]));
+			let find_key;
+			try{
+				find_key=new Set(navigator.nako3.lex(code.innerHTML).tokens.reduce((old,now)=>now.type=="func"?[...old,now.value]:old,[]));
+			}catch(error){
+				find_key=old_find_key;
+			}
 
 			if(!_.isEqual(old_find_key, find_key)){
 				old_find_key=find_key;
 				reference.innerHTML="";
-				find_key.forEach(key=>{
-					if(!wnako3_reference[key]){console.log(key);return;}
-					const click_div=reference.appendChild(document.createElement("div"));
-					click_div.textContent=key;
-					click_div.onclick=()=>{
-						if(typeof wnako3_reference[key]=="string"){
-							window.open(wnako3_reference[key]);
-						}else{
-							reference_dialog.innerHTML="<h3>"+key+"</h3><div>使い方：<br>"+wnako3_reference[key][0]+"</div><br><div>説明：<br>"+wnako3_reference[key][1]+"</div>";
-							message_dialog_setting("reference");
-							message_dialog_show();
+				if(find_key.size){
+					find_key.forEach(key=>{
+						if(!wnako3_reference[key]){console.log(key);return;}
+						const click_div=reference.appendChild(document.createElement("div"));
+						click_div.textContent=key;
+						click_div.onclick=()=>{
+							if(typeof wnako3_reference[key]=="string"){
+								window.open(wnako3_reference[key]);
+							}else{
+								reference_dialog.innerHTML="<h3>"+key+"</h3><div>使い方：<br>"+wnako3_reference[key][0]+"</div><br><div>説明：<br>"+wnako3_reference[key][1]+"</div>";
+								message_dialog_setting("reference");
+								message_dialog_show();
+							}
 						}
-					}
-					click_div.classList.add("click_div");
+						click_div.classList.add("click_div");
 
-				});
+					});
+				}
 			}
 		}
 
@@ -135,6 +159,11 @@ window.addEventListener("load", ()=>{
 			run.click();
 		}
 	});
+
+	code.addEventListener('mouseup', saveSelection);
+	code.addEventListener('keyup', saveSelection);
+	code.addEventListener('focus', saveSelection);
+	code.addEventListener('blur', saveSelection);
 	code.addEventListener('compositionstart', ()=>{replace_flag=false;});
 	code.addEventListener('compositionend', ()=>{replace_flag=true;});
 	code.addEventListener("keydown", event=>{
@@ -182,8 +211,9 @@ window.addEventListener("load", ()=>{
 		message_dialog_setting("auto_push");
 		message_dialog_show();
 	});
-	var_push.addEventListener("click", ()=>{
-		code_insert("《》");
+	var_push.addEventListener("click", e=>{
+		e.preventDefault();
+		code_insert("《》", true);
 	});
 	save.addEventListener("click", ()=>{
 		localStorage.setItem('LONGIC_save', code.innerHTML);
@@ -289,7 +319,6 @@ window.addEventListener("load", ()=>{
 		window.addEventListener("beforeunload", unload);
 	};
 	send_mail_auto_push.addEventListener("click", ()=>{
-		if(!confirm("いたずら防止のため、現在、宛先を兵庫教育大学内に制限しています。続行しますか？"))return;
 		code_auto_insert(
 			"<div>《キーワード》に「◯◯◯◯」を代入</div>"+
 			"<div>《本文》に「◯◯◯◯◯◯◯◯◯◯◯」を代入</div>"+
