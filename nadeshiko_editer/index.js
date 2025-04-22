@@ -21,13 +21,20 @@ const toHalfWidth=(str)=>{
 }
 
 window.addEventListener("load", ()=>{
+	const control_default_button=(()=>{
+		const default_text={};
+		Array.from(control.getElementsByTagName('button')).forEach(e=>{
+			default_text[e.id]=e.textContent;
+		});
+		return default_text;
+	})();
 	const control_button_dis=(target, new_text)=>{
 		const old_text=target.textContent;
 		target.style.width=target.offsetWidth+"px";
 		target.textContent=new_text;
 		target.disabled=true;
 		setTimeout(()=>{
-			target.textContent=old_text;
+			target.textContent=control_default_button[target.id]||old_text;
 			target.disabled=false;
 			target.style.width="";
 		}, 5*1000);
