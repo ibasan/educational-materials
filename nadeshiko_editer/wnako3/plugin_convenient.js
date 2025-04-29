@@ -32,6 +32,7 @@ const plugin_convenient={
 			}else{
 				img.src=url;
 			}
+			return img;
 		}
 	},
 	'文字色変更': {
@@ -39,6 +40,7 @@ const plugin_convenient={
 		josi: [['を'],['に','へ']],
 		fn: function (element, color, sys) {
 			element.style.color=color;
+			return element;
 		}
 	},
 	'文字サイズ変更': {
@@ -46,6 +48,7 @@ const plugin_convenient={
 		josi: [['を'],['に','へ']],
 		fn: function (element, size, sys) {
 			element.style.fontSize=size;
+			return element;
 		}
 	},
 	'背景色変更': {
@@ -53,6 +56,7 @@ const plugin_convenient={
 		josi: [['を'],['に','へ']],
 		fn: function (element, color, sys) {
 			element.style.backgroundColor=color;
+			return element;
 		}
 	},
 
