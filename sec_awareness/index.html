@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>技術に関する用語</title>
+	<style type="text/css">
+		html, body, #body, #pre_body{
+			width: 100%;
+			height: 100%;
+			margin: 0;
+		}
+		#body{
+			display: none;
+			flex-direction: column;
+		}
+		#pre_body{
+			font-size: 1.3rem;
+			align-items: center;
+			justify-content: center;
+		}
+		.main{
+			width: calc(100% - 20px);
+			height: 50%;
+			margin: 10px;
+		}
+		#pre{
+			overflow-y: scroll;
+			font-size: 1.5rem;
+			max-width: 1000px;
+			margin: 10px auto;
+		}
+		#end{
+			font-size: 1.7rem;
+		}
+		#que{
+			display: none;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.bold_span{
+			font-weight: bold;
+		}
+		#button_div{
+			flex: 1;
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-end;
+
+			button{
+				font-size: 1.5rem;
+				width: 40%;
+				height: 95%;
+				-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
+				box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
+			}
+		}
+		#ok{
+			background: #5B9BD5;
+			border-bottom: 10px solid #007bb8;
+			transition: 0s;
+		}
+		.ok_span{
+			color: #007bb8;
+		}
+		#ok:hover {
+			margin-top: 3px;
+			background: #00bff8;
+			border-bottom: 2px solid #b84c00;
+			transition: 0.3s;
+		}
+		#no{
+			color: #fff;
+			background: #ED7D31;
+			border-bottom: 10px solid #b84c00;
+			transition: 0s;
+		}
+		.no_span{
+			color: #ED7D31;
+		}
+		#no:hover {
+			margin-top: 3px;
+			background: #f56500;
+			border-bottom: 2px solid #b84c00;
+			transition: 0.3s;
+		}
+	</style>
+	<script type="text/javascript">
+		const shuffled_word=["データソース","クリエイティブコモンズライセンス","クラウドコンピューティング","サイバーテロ集団","シーザー暗号","ルーター","プロトコル","スクリーン","インターネットベース","アクセス","利用規約","プライバシー","ログアウト","ハブ","16進数","アクセス制御","コード","電話機","対処法","テキストボックス","デジタルミレニアム著作権法","インターネット","セキュリティポリシー","ヘッドフォン","MACアドレス","HTTPS","タグ","自動保存機能","インターネット接続","ネットワークデバイス","制限","IPアドレス体系","パブリックIPアドレス","年齢制限","EULA","公開情報","認可","ユーザープラットフォーム","フィード","携帯電話","著作権","エニグマ暗号","行動","コミュニティクラウド","個人情報","デジタル機器","ハッキング","システム構成","機器類","ドアロック","暗号","機器","Webページ","ポリシー","第三者","ストレージ","利用規約（TOS）","情報保護","バイスタンダー","ID","サイバー攻撃","ビデオ","ドライブ","規則","バックアップ","多層防御","2進数","ウェアラブル","デジタル足跡","ヴィジェネル","許可リスト","情報セキュリティ","三位一体","デバイス","ネットワーク機器","クリック","連邦法","ネットワーク","二要素認証","ボタン","パスワード","アクセスポイント","ベーコン暗号","所有権","保護","サービス","接続","CIA","ユーザー","学校","デジタルポリシー","ループ","プロセス","スイッチ","州法","クリエーター","指紋認証","http","ファイアウォール","クラウド","リンク","システム","パブリッククラウド","損失","情報","クレジットカード","インストール","パッチ","IPアドレス","検証","BYOD","アプリケーション","ネット","標準規格","改ざん","タスク","設計","ハクティビスト","特許","システムコマンド","通信システム","特権情報","可用性","認証","法律","商標","ブロックリスト","脅威アクター","データ損失","物理デバイス","ネットワークサービス","オンライン","許可","利用規約（AUP）","OS（Operating System）","https","二要素","コンテンツ","ゲーム機","キーロガー","ハッシュタグ","10進数","クラウドベース","スクリプト言語","電子メール","参考文献","ネットワークドライブ","登録商標","クラウドコンピューティングモデル","スクリプト","ゲームシステム","アップデート","モバイルデバイス","イベント","HTTP","メール","セキュリティ機器","ルール","IoT","ソフトウェア","オンライン利用","情報交換","エンドユーザーライセンス契約","ハードウェア","ゲーム","ソフトウェアアプリケーション","マルウェア","ユーザー機器","リスク","ファイル","テレメトリー","ファームウェア","セキュリティ","パーツ","CIAトライアド","著者","Wi-Fi","ピッグペン暗号","ソーシャルメディア","検出","技術","UDP","更新","年齢証明","TCP","プラグ","公共ネットワーク","フェアユース","WAN","ソーシャルエンジニアリング","エンコード方式","プラットフォーム","ネット中立","ペアレンタルコントロール","承認","デジタル","ROT13","多要素","接続機器","デフォルトパスワード","WEBカメラ","認定ユーザー","使用防止法","オペレーティングシステム","ネットワーク通信","パスフレーズ","児童インターネット保護法","サービス停止","テロ対策法","USBドライブ","地方法","ネットワーク構成","個人所有デバイス","ポップアップ","コンピュータ","条件分岐","アップスタンダー","生体認証","Googleドライブ","中心","LAN","アカウント","オンラインサービス","ネット接続","財産権","ログイン","ネットワークセキュリティ","電子プライバシー法","WEB","ネットワーク接続","権利","PINコード","サイバーセキュリティ","スキュタレー暗号","存在意義","ハッカー","機密","データ","アプリ","身元保証"];
+	</script>
+	<script type="text/javascript">
+		const MAX_QUESTIONS=50;
+
+		const url="https://script.google.com/macros/s/AKfycbz9lnZQ_H8SrauiG3whZ2zRqBP67-dIf6ndAwpP-5MAatLUbi14Vw3DsQNNP2fPDV84/exec?time=";
+		let now_prog=localStorage.getItem("SSEC_now_prog")-0;
+		let start_count=localStorage.getItem("SSEC_start_count")-0;
+		let error_flag=false;
+		let end_flag=false;
+		if(start_count<=0){
+			now_prog=0;
+			(async ()=>{
+				try {
+					const response=await fetch(url+Date.now());
+					const text=await response.text();
+					start_count=text-0;
+					localStorage.setItem("SSEC_start_count", start_count);
+					now_prog=(start_count-1)*MAX_QUESTIONS;
+					localStorage.setItem("SSEC_now_prog", now_prog);
+				} catch (error) {
+					alert("接続できませんでした。再読み込みしても正常に動作しない場合は、管理者まで連絡してください。");
+					error_flag=true;
+					body.innerHTML='<div class="bold_span" style="font-size:30px;color:red;margin:15px;">[エラー]接続できませんでした。再読み込みしても正常に動作しない場合は、管理者まで連絡してください。</div>';
+				}
+			})();
+			getClientIp().then((my_ip)=>{
+				logging(my_ip+location.hash);
+			});
+		}
+		async function getClientIp() {
+			try {
+				const response=await fetch('https://api.ipify.org?format=json');
+				if (!response.ok){throw new Error('HTTP error');}
+				const data=await response.json();
+				return data.ip || '0.0.0.0';
+			} catch (e) {
+				return '0.0.0.0';
+			}
+		}
+		function logging(text, reset=false){
+			const main_data=reset?"":(localStorage.getItem("SSEC_data")||"");
+			localStorage.setItem("SSEC_data", main_data+text+",");
+		}
+		function next(count_up_flag=true){
+			if(count_up_flag) now_prog++;
+			localStorage.setItem("SSEC_now_prog", now_prog);
+			
+			if(now_prog-((start_count-1)*MAX_QUESTIONS)>=MAX_QUESTIONS){
+				post_text_to_gas(localStorage.getItem("SSEC_data")).then((ok)=>{
+					end.innerHTML="以上でアンケートは終了です。ご協力ありがとうございました。";
+				});
+				body.style.display="none";
+				pre_body.innerHTML="<span id='end'>現在データを処理しています...そのままお待ちください（最大10秒ほど）</span>";
+				pre_body.style.display="flex";
+
+			}else{
+				que_text.innerText=shuffled_word[now_prog%shuffled_word.length];
+				fitTextToParent();
+			}
+		}
+		function fitTextToParent(max_font_size=3){
+			que_text.style.whiteSpace='nowrap';
+			que_text.style.display='inline-block';
+			que_text.style.fontSize=max_font_size+"rem";
+
+			while (que_text.offsetWidth > que.clientWidth && max_font_size > 0) {
+				max_font_size -= 0.1;
+				que_text.style.fontSize=max_font_size+"rem";
+			}
+		}
+		async function post_text_to_gas(text_data) {
+			if(text_data=="") return;
+			const sleep=(ms)=>{return new Promise(resolve => setTimeout(resolve, ms));};
+			const max_retries=5;
+
+			for (let i=0; i<max_retries; i++) {
+				try {
+					const res=await fetch(url+Date.now(), {
+						method: 'POST',
+						headers: { 'Content-Type': 'text/plain' },
+						body: text_data
+					});
+
+					if(!res.ok){throw new Error(`HTTP ${res.status}`);}
+
+					//終わり次第，データを消す
+					localStorage.setItem("SSEC_data","");
+					end_flag=true;
+					return await res.text();
+				} catch (err) {
+					if(i<max_retries-1) {
+						await sleep(Math.floor(Math.random()*901)+100);
+					}
+				}
+			}
+		}
+
+
+		window.addEventListener("load", async ()=>{
+			const do_click=(flag)=>{
+				if(getComputedStyle(pre).display=="none"){
+					logging((now_prog%shuffled_word.length)+""+(flag-0));
+					next();
+				}else{ //preが表示されている状態
+					if(flag){
+						(start_count-1)
+						pre.style.display="none";
+						que.style.display="flex";
+						next(false);
+					}else{
+						alert("説明をよく読んでから、再度実行してください。");
+					}
+				}
+			};
+			ok.addEventListener("click", ()=>{do_click(true);});
+			no.addEventListener("click", ()=>{do_click(false);});
+
+			const startup_timer=setInterval(()=>{
+				if(start_count>0||error_flag){
+					clearInterval(startup_timer);
+					body.style.display="flex";
+					pre_body.style.display="none";
+				}
+			},50);
+		});
+	</script>
+</head>
+<body>
+	<div id="pre_body">現在読み込み中...しばらくお待ちください。</div>
+	<div id="body">
+		<div class="main" id="pre">
+			今から技術（情報分野）に関する用語が画面中央に表示されます。その用語を知っていたら右下の「<span class="ok_span bold_span">知っているボタン</span>」を、知らない場合は、左下の「<span class="no_span bold_span">知らないボタン</span>」を押してください。間違えても構いませんので、<span class="bold_span">深く考え込まず</span>、友達と相談せずに、直感的に回答してください。<br><br>
+			皆さんに回答してもらったデータは、保護者の方や担任の先生などに伝わることはありません。ただし、誰が回答したか分からないように匿名化し、公表することがあります。<br>
+			回答には約5分掛かります。準備が出来たら、右下の「<span class="ok_span bold_span">知っているボタン</span>」を押して、開始してください。
+		</div>
+		<div class="main" id="que">
+			<span id="que_text">サイバーセキュリティサイバーセキュリティ</span>
+		</div>
+		<div id="button_div">
+			<button id="no">知らない</button>
+			<button id="ok">知っている</button>
+		</div>
+	</div>
+</body>
+</html>
