@@ -13,6 +13,7 @@ const plugin_convenient={
 
 
 	'無限': { type: 'const', value: Infinity },
+	'円周率': { type: 'const', value: Math.PI },
 	'画像作成': {
 		type: 'func',
 		josi: [['の', 'から']],
