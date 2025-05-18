@@ -86,6 +86,10 @@ window.addEventListener("load", ()=>{
 			navigator.nako3.prepare.convertTable.set(10060,"*");
 			navigator.nako3.prepare.convertTable.set(10062,"*");
 
+			//違う種類の鍵括弧でも実行できるように。
+			navigator.nako3.prepare.convertTable.set(65378,"「");
+			navigator.nako3.prepare.convertTable.set(65379,"」");
+
 			//autorun
 			if(autorun_code){
 				nako3_run(autorun_code);
