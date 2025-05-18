@@ -100,15 +100,6 @@ const plugin_convenient={
 			return inp;
 		}
 	},
-	'変更時': {
-		type: 'func',
-		josi: [['で'], ['を']],
-		pure: true,
-		fn: function (func, dom, sys) {
-			sys.__addEvent(dom, 'change', func, null);
-		},
-		return_none: true
-	},
 	'リンク作成': {
 		type: 'func',
 		josi: [['で'],['の']],
