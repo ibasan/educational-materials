@@ -103,7 +103,7 @@
 			now_prog=0;
 			(async ()=>{
 				try {
-					const response=await fetch(url+Date.now());
+					const response=await fetch(url+Date.now()+"&mode="+add_text);
 					const text=await response.text();
 					start_count=text-0;
 					localStorage.setItem("SSEC_start_count", start_count);
@@ -168,7 +168,7 @@
 			for (let i=0; i<max_retries; i++) {
 				try {
 					
-					const res=await fetch(url+Date.now()+"&mode="+add_text, {
+					const res=await fetch(url+Date.now(), {
 						method: 'POST',
 						headers: { 'Content-Type': 'text/plain' },
 						body: text_data
