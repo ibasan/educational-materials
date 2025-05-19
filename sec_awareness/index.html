@@ -99,6 +99,10 @@
 		let start_count=localStorage.getItem("SSEC_start_count")-0;
 		let error_flag=false;
 		let end_flag=false;
+
+		//デバッグ用
+		if(add_text.include("test")) start_count=0;
+		
 		if(start_count<=0){
 			now_prog=0;
 			(async ()=>{
