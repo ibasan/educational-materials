@@ -94,6 +94,7 @@
 		const MAX_QUESTIONS=150;
 
 		const url="https://script.google.com/macros/s/AKfycbz9lnZQ_H8SrauiG3whZ2zRqBP67-dIf6ndAwpP-5MAatLUbi14Vw3DsQNNP2fPDV84/exec?time=";
+		const add_text=(location.hash||"#ok").slice(1);
 		let now_prog=localStorage.getItem("SSEC_now_prog")-0;
 		let start_count=localStorage.getItem("SSEC_start_count")-0;
 		let error_flag=false;
@@ -115,7 +116,7 @@
 				}
 			})();
 			getClientIp().then((my_ip)=>{
-				logging(my_ip+location.hash);
+				logging(my_ip+"#"+add_text);
 			});
 		}
 		async function getClientIp() {
@@ -166,7 +167,8 @@
 
 			for (let i=0; i<max_retries; i++) {
 				try {
-					const res=await fetch(url+Date.now(), {
+					
+					const res=await fetch(url+Date.now()+"&mode="+add_text, {
 						method: 'POST',
 						headers: { 'Content-Type': 'text/plain' },
 						body: text_data
