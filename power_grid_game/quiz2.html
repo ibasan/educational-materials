@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>電子回路ゲーム</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.2.1/math.min.js" integrity="sha512-VtnWaMtJXqcmxwDizzsWJOnZdX3Jaf9qlFWXEN4nL1KaoQzyNC+1f8lHFD6qd38cyfMgUeucF+pJCTc2p2SsVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./src/top.css">
+  <script src="./src/quiz.js"></script>
+</head>
+<body>
+  <script src="./src/include.js"></script>
+  <script>
+    let debug = false;
+    const gridSize = 11;
+    let scale = 1.7;
+
+    window.addEventListener("load", ()=>{
+      createGrid();
+      applyTransform();
+      Wire.setButtonUI();
+      QUIZ.setButtonUI();
+      QUIZ.question = "クイズ2「大きくても回路」<br><br>クリア条件：<br>　回路を正しく接続せよ";
+      QUIZ.run();
+
+      gridlist.flat().forEach(c => {
+        if (c.x==1 || c.x==9 || c.y==1 || c.y==9){
+          if (c.x==0 || c.x==10 || c.y==0 || c.y==10){
+            c.switchEditable(false);
+          }
+        }else{
+          c.switchEditable(false);
+        }
+      });
+      gridlist[5][1].overrideCell("battery-up");
+      gridlist[5][1].switchEditable(false);
+      gridlist[5][9].overrideCell("resistor-up");
+      gridlist[5][9].switchEditable(false);
+
+      QUIZ.setAnswer(()=>{
+        if (gridlist[4][1].nodeId) {
+          const aId = gridlist[4][1].nodeId;
+          const bId = gridlist[5][1].nodeId;
+          return window.lastCalcAns.get(Cell.moldingBranch(aId, bId, "I").name) != 0;
+        }
+        return false;
+      });
+    });
+
+  </script>
+
+</body>
+</html>

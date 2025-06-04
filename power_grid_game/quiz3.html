@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>電子回路ゲーム</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.2.1/math.min.js" integrity="sha512-VtnWaMtJXqcmxwDizzsWJOnZdX3Jaf9qlFWXEN4nL1KaoQzyNC+1f8lHFD6qd38cyfMgUeucF+pJCTc2p2SsVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./src/top.css">
+  <script src="./src/quiz.js"></script>
+</head>
+<body>
+  <script src="./src/include.js"></script>
+  <script>
+    let debug = false;
+    const gridSize = 7;
+    let scale = 2.8;
+
+    window.addEventListener("load", ()=>{
+      createGrid();
+      applyTransform();
+      Wire.setButtonUI();
+      QUIZ.setButtonUI();
+      QUIZ.question = "クイズ3「危険な回路」<br><br>クリア条件：<br>　危険な回路を作成せよ";
+      QUIZ.mistakeReload = true;
+      QUIZ.run();
+
+      gridlist.flat().forEach(c => {
+        if (c.x==1 || c.x==5 || c.y==1 || c.y==5){
+          if (!(c.x==0 || c.x==6 || c.y==0 || c.y==6)) {
+            c.overrideCell("wire");
+          }
+        }
+        gridlist[c.y][c.x].switchEditable(false);
+      });
+
+      gridlist[3][1].overrideCell("battery-up");
+      gridlist[3][5].overrideCell("resistor-up");
+
+      QUIZ.setAnswer(()=>{
+        return !Battery.simpleShortCircuitCheck();
+      });
+    });
+
+  </script>
+
+</body>
+</html>

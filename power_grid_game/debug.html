@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>電子回路ゲーム</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.2.1/math.min.js" integrity="sha512-VtnWaMtJXqcmxwDizzsWJOnZdX3Jaf9qlFWXEN4nL1KaoQzyNC+1f8lHFD6qd38cyfMgUeucF+pJCTc2p2SsVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./src/top.css">
+</head>
+<body>
+  <script src="./src/include.js"></script>
+  <script>
+    let debug = false;
+    const gridSize = 30;
+
+    let scale = 2;
+
+    window.addEventListener("load", ()=>{
+      createGrid();
+      applyTransform();
+      Wire.setButtonUI();
+      Battery.setButtonUI();
+      Resistor.setButtonUI();
+      LED.setButtonUI();
+    });
+
+  </script>
+
+</body>
+</html>

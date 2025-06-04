@@ -1,0 +1,106 @@
+#quiz_ans{
+  position: absolute;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+
+  width: 50%;
+  height: 5rem;
+  padding: 0 1rem;
+
+  /* ビジュアル */
+  background: #ffffff;                 /* 白ベース */
+  color: #333;                         /* 文字はやや濃いグレー */
+  font-size: 1.4rem;
+  font-weight: 600;
+  border: 8px double #444;              /* #aaa をラインに使用 */
+  border-radius: .55rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,.06); /* うっすら影 */
+  cursor: pointer;
+
+  /* スムーズなエフェクト */
+  transition:
+    transform .15s ease,
+    box-shadow .15s ease,
+    filter .15s ease;
+}
+
+/* ホバー：ほんのり浮かせて明るく */
+#quiz_ans:hover{
+  transform: translateX(-50%) translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0,0,0,.08);
+  filter: brightness(1.03);
+}
+
+/* クリック中：少し沈める */
+#quiz_ans:active{
+  transform: translateX(-50%) translateY(0);
+  box-shadow: 0 1px 3px rgba(0,0,0,.05) inset;
+}
+
+/* キーボード操作時のフォーカス（アクセシビリティ） */
+#quiz_ans:focus-visible{
+  outline: 3px solid #aaa;
+  outline-offset: 2px;
+}
+
+
+/* ===== Dialogタグ用 ===== */
+:root{
+  --modal-border   : #aaa;
+  --modal-shadow   : rgba(0,0,0,.15);
+  --close-color    : #007bff;
+}
+
+/* ===== ページ説明モーダル ===== */
+dialog.page-modal{
+  width : 50%;
+  height: 50%;
+  max-width: 640px;           /* 大画面での上限 */
+  border: 1px solid var(--modal-border);
+  border-radius: .6rem;
+  padding: 0;                 /* 内側は form が管理 */
+  box-shadow: 0 4px 20px var(--modal-shadow);
+}
+
+/* 内部レイアウト（flex 縦並び） */
+.page-modal form{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 説明エリア */
+.page-modal .modal-body{
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+  color: #333;
+}
+
+.modal-body{
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 閉じるボタン */
+.page-modal .modal-close{
+  all: unset;
+  text-align: center;
+  margin: 0 1rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--close-color);
+  font-size: 1.5rem;
+}
+
+.page-modal .modal-close:hover{
+  text-decoration: underline;
+}
+
+.page-modal::backdrop{
+    background: rgba(0, 0, 0, 0.5)
+}

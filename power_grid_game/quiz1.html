@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>電子回路ゲーム</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.2.1/math.min.js" integrity="sha512-VtnWaMtJXqcmxwDizzsWJOnZdX3Jaf9qlFWXEN4nL1KaoQzyNC+1f8lHFD6qd38cyfMgUeucF+pJCTc2p2SsVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./src/top.css">
+  <script src="./src/quiz.js"></script>
+</head>
+<body>
+  <script src="./src/include.js"></script>
+  <script>
+    let debug = false;
+    const gridSize = 3;
+
+    let scale = 5;
+
+    const gridlistRequest = [
+      ["wire", "wire", "wire"],
+      ["", "", "resistor-up"],
+      ["wire", "wire", "wire"],
+    ];
+
+    window.addEventListener("load", ()=>{
+      createGrid();
+      applyTransform();
+      Battery.setButtonUI();
+      QUIZ.setButtonUI();
+      QUIZ.question = "クイズ1「基本の回路」<br><br>クリア条件：<br>　回路を正しく接続せよ";
+      QUIZ.run();
+
+      gridlist.flat().forEach(c => {
+        c.switchEditable(false);
+      });
+      gridlist[1][0].switchEditable(true);
+
+      QUIZ.setAnswer(()=>{
+        return gridlist[1][0].type == "battery" && ["up","down"].includes(gridlist[1][0].direction);
+      });
+    });
+
+  </script>
+
+</body>
+</html>

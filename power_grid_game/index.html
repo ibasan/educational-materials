@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>電子回路ゲーム</title>
+ 	<link rel="stylesheet" href="./src/top.css">
+ 	<style>
+ 		/* =====================  基本カラーを変数で定義  ===================== */
+		:root{
+		  --electric-bg-start:#00d2ff;
+		  --electric-bg-end:#3a7bd5;
+		  --electric-glow:rgba(0,212,255,.75);
+		  --electric-text:#ffffff;
+		}
+
+		body{
+			display: flex;
+			flex-direction: column;
+			color:var(--electric-text);
+			background:
+			  #0a0a0a
+			  linear-gradient(135deg,#080a0f 0%,#0f1b33 100%);
+		}
+		#title{
+			display: flex;
+		    justify-content:center;
+
+		}
+
+		#main{
+		  flex: 1;
+		  display:flex;
+		  flex-wrap:wrap;
+		  justify-content:center;
+		  align-content: flex-start;
+		  gap:2rem;
+		  padding:2rem 1rem;
+		  padding-bottom:8rem;
+		  
+		}
+
+		/* =====================  ボタン本体  ===================== */
+		#main button, .freemode{
+		  flex:1 1 240px;
+		  max-width:260px;
+		  height:5rem;
+		  position:relative;
+		  font-size:1.25rem;
+		  font-weight:600;
+		  letter-spacing:.05em;
+		  
+		  background:linear-gradient(120deg,
+		            var(--electric-bg-start),
+		            var(--electric-bg-end));
+		  border:none;
+		  border-radius:.8rem;
+		  cursor:pointer;
+
+		  box-shadow:
+		    0 0 12px var(--electric-glow),
+		    inset 0 0 6px rgba(255,255,255,.18);
+		  transition:transform .18s ease,
+		             box-shadow .18s ease;
+		}
+
+		#main button::before, .freemode::before{
+		  content:"💡" / ":電気:";
+		  position:absolute;
+		  left:1rem;
+		  top:50%;
+		  transform:translateY(-50%);
+		  font-size:2.5rem;
+		  pointer-events:none;
+		  filter:drop-shadow(0 0 3px var(--electric-glow));
+		}
+
+		#main button:hover, .freemode:hover{
+		  transform:translateY(-6px);
+		  box-shadow:
+		    0 0 18px var(--electric-glow),
+		    0 4px 8px rgba(0,0,0,.35);
+		}
+
+		#main button:active, .freemode:active{
+		  transform:translateY(0);
+		  box-shadow:
+		    0 0 10px var(--electric-glow) inset,
+		    0 2px 4px rgba(0,0,0,.4);
+		}
+		button.freemode{
+			position: fixed;
+			left: 10%;
+			bottom: 15px;
+			z-index: 10;
+			font-size: 1.5rem;
+			width: 80%;
+			max-width: 100%;
+
+			--electric-bg-start:#ffb347;
+			--electric-bg-end:#ff6130;
+			--electric-glow:rgba(255,136,0,.75);
+		}
+		.freemode::before{
+		  content:"📓" / ":作成:";
+		}
+
+ 	</style>
+
+</head>
+<body>
+	<div id="title"><h1>電気回路クイズ</h1></div>
+	<div id="main"></div>
+	<script>
+		for (let i = 1; i <= 11; i++) {
+			const button = main.appendChild(document.createElement('button'));
+			button.textContent = "クイズ" + i;
+			button.addEventListener("click", ()=>{
+				if (i>6) {alert("まだ出来てないよ～！"); return;}
+				window.location.href = "./quiz" + i +".html";
+			});
+		}
+
+		const button = document.body.appendChild(document.createElement('button'));
+		button.textContent = "フリーモード";
+		button.classList.add("freemode");
+		button.addEventListener("click", ()=>{
+			window.location.href = "./debug.html";
+		});
+	</script>
+</body>
+</html>
