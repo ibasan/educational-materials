@@ -93,7 +93,7 @@ class Wire extends Cell{
       return filtered.length ? filtered[filtered.length - 1][1] : undefined;
     }
 
-    if (false || debug) {
+    if (true || debug) {
       const preEle = this.el.getElementsByClassName('debug');
       if (preEle.length >0) preEle[0].remove();
 
