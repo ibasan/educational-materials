@@ -298,6 +298,19 @@ body {
 }
 
 
+.radio-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.mini {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+
+  background: #eee;
+}
+
 
 
 .up{

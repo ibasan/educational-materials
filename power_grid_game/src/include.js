@@ -25,10 +25,22 @@ const mainBody = `
         電池
       </summary>
       <div class="options">
-        <label><input type="radio" name="part" value="battery-up"> 上</label>
-        <label><input type="radio" name="part" value="battery-right"> 右</label>
-        <label><input type="radio" name="part" value="battery-down"> 下</label>
-        <label><input type="radio" name="part" value="battery-left"> 左</label>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="battery-up">
+          <div class="mini mini-battery up"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="battery-down">
+          <div class="mini mini-battery down"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="battery-right">
+          <div class="mini mini-battery right"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="battery-left">
+          <div class="mini mini-battery left"></div>
+        </div>
       </div>
     </details>
 
@@ -37,8 +49,14 @@ const mainBody = `
         抵抗
       </summary>
       <div class="options">
-        <label><input type="radio" name="part" value="resistor-up"> 縦</label>
-        <label><input type="radio" name="part" value="resistor-left"> 横</label>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="resistor-up">
+          <div class="mini mini-resistor up"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="resistor-left">
+          <div class="mini mini-resistor left"></div>
+        </div>
       </div>
     </details>
 
@@ -47,10 +65,22 @@ const mainBody = `
         発光ダイオード
       </summary>
       <div class="options">
-        <label><input type="radio" name="part" value="led-up"> 上</label>
-        <label><input type="radio" name="part" value="led-right"> 右</label>
-        <label><input type="radio" name="part" value="led-down"> 下</label>
-        <label><input type="radio" name="part" value="led-left"> 左</label>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="led-up">
+          <div class="mini mini-led up"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="led-down">
+          <div class="mini mini-led down"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="led-right">
+          <div class="mini mini-led right"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="led-left">
+          <div class="mini mini-led left"></div>
+        </div>
       </div>
     </details>
 
@@ -71,14 +101,23 @@ const mainBody = `
 `;
 document.body.innerHTML = mainBody + document.body.innerHTML;
 
-["control.js", "cell.js",
+const scripts = [
+  "control.js", "cell.js",
 	"wire.js",
 	"resistor.js",
 	"battery.js",
 	"led.js"
-].forEach(src => {
-	const temp = document.createElement("script");
-	temp.async = false;
-	temp.src = "./src/" + src;
-	document.body.prepend(temp);
+];
+
+Promise.all(
+  scripts.map(src => new Promise(resolve => {
+    const temp = document.createElement("script");
+    temp.async = false;
+    temp.src = "./src/" + src;
+    temp.onload = resolve;
+    temp.onerror = resolve;
+    document.body.prepend(temp);
+  }))
+).then(() => {
+  window.dispatchEvent(new Event("ready"));
 });

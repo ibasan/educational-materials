@@ -119,3 +119,39 @@ document.querySelectorAll('input[name="part"]').forEach(radio => {
     currentPart = radio.value;
   });
 });
+
+
+// 以下，メニュー内の図を配置
+(()=>{
+  Array.from(document.getElementsByClassName('mini-battery')).forEach(ele=>{
+    const temp = document.getElementById("battery-template");
+    const clone = temp.content.cloneNode(true);
+    ele.appendChild(clone);
+  });
+  Array.from(document.getElementsByClassName('mini-resistor')).forEach(ele=>{
+    const resistor = document.createElement("div");
+    resistor.className = `resistor`;
+    ele.appendChild(resistor);
+  });
+  Array.from(document.getElementsByClassName('mini-led')).forEach(ele=>{
+    const temp = document.getElementById("led-template");
+    const clone = temp.content.cloneNode(true);
+    ele.appendChild(clone);
+  });
+})();
+
+document.querySelectorAll('.radio-wrapper').forEach(div => {
+  div.addEventListener('click', function(e) {
+    const input = this.querySelector('input[type="radio"]');
+    if (input) {
+      input.checked = true;
+      input.dispatchEvent(new Event('change', {bubbles:true}));
+    }
+  });
+  div.addEventListener('keydown', function(e) {
+    if (e.key === " " || e.key === "Enter") {
+      this.click();
+      e.preventDefault();
+    }
+  });
+});
