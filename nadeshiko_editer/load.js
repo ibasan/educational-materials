@@ -92,7 +92,8 @@ window.addEventListener("load", ()=>{
 
 			//autorun
 			if(autorun_code){
-				nako3_run(autorun_code);
+				// ほんとはpromiseで管理した方が良いけれど、ひとまず読み込み遅延1秒を掛ける
+				setTimeout(()=>{nako3_run(autorun_code);},1000);
 			}
 		}
 	}, 100);
