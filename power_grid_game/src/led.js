@@ -24,12 +24,16 @@ class LED extends Cell{
     const caTHodeId = gridlist[self.y + off.dy][self.x + off.dx].nodeId;
     const aNodeId = gridlist[self.y - off.dy][self.x - off.dx].nodeId;
 
-    const accessCalcEndFlag = "resultVnA" in self.calcEndFlag && "resultVnB" in self.calcEndFlag;
+    const accessCalcEndFlag = "resultVnA" in self.calcEndFlag && "resultVnB" in self.calcEndFlag && "resultInA" in self.calcEndFlag;
     const checkedCalcEndFlag = accessCalcEndFlag ? (self.calcEndFlag.resultVnA - self.calcEndFlag.resultVnB >= self.fowardVoltage) : false;
     const eqs = [];
 
     const InA = Cell.moldingBranch(aNodeId, nodeId, "I");
     const InB = Cell.moldingBranch(caTHodeId, nodeId, "I");
+    const VnA = Cell.moldingBranch(aNodeId, nodeId, "V");
+    const VnB = Cell.moldingBranch(caTHodeId, nodeId, "V");
+
+    if (accessCalcEndFlag) console.log("再計算！");
 
     if (accessCalcEndFlag && !checkedCalcEndFlag) {
       eqs.push({
@@ -46,30 +50,25 @@ class LED extends Cell{
       });
 
     } else { //初回計算時 or 通電時の電流
-      const eqs = [{
+      eqs.push({
         terms   : [
           { variable: InA.name, coeff: InA.sign },
           { variable: InB.name, coeff: InB.sign },
         ],
         constant: 0
-      }];
-    }
-
-    const VnA = Cell.moldingBranch(aNodeId, nodeId, "V");
-    const VnB = Cell.moldingBranch(caTHodeId, nodeId, "V");
-
-    //最初は電圧のみ不明で計算
-    if (accessCalcEndFlag && checkedCalcEndFlag) {
-      console.log("再計算！");
-      eqs.push({
-        terms   : [
-          { variable: VnA.name, coeff: 1 },
-          { variable: VnB.name, coeff: -1 }
-        ],
-        constant: self.fowardVoltage
       });
-    }
 
+      // 通電している時
+      if (accessCalcEndFlag) {
+        eqs.push({
+          terms   : [
+            { variable: VnA.name, coeff: 1 },
+            { variable: VnB.name, coeff: -1 }
+          ],
+          constant: self.fowardVoltage
+        });
+      }
+    }
 
     if (the_first) {
       eqs.push({
@@ -129,6 +128,7 @@ class LED extends Cell{
 
     const VnA = Cell.moldingBranch(aNodeId, nodeId, "V");
     const VnB = Cell.moldingBranch(caTHodeId, nodeId, "V");
+    const InA = Cell.moldingBranch(aNodeId, nodeId, "I");
 
     if ("resultVnA" in this.calcEndFlag && "resultVnB" in this.calcEndFlag) {
       if (this.calcEndFlag.resultVnA == result.get(VnA.name) && this.calcEndFlag.resultVnB == result.get(VnB.name)) return false;
@@ -137,7 +137,8 @@ class LED extends Cell{
     // 今回の情報を登録して、再計算に備える
     this.calcEndFlag = {
       "resultVnA":result.get(VnA.name),
-      "resultVnB":result.get(VnB.name)
+      "resultVnB":result.get(VnB.name),
+      "resultInA":result.get(InA.name),
     };
     return true;
 

@@ -14,6 +14,11 @@ const mainBody = `
 	  <span class="mask"></span>
     </div>
   </template>
+  <template id="switch-template">
+    <div class="switch-2point">
+      <div class="arm"></div>
+    </div>
+  </template>
 
   <div id="toolbar">
     <label>
@@ -84,6 +89,22 @@ const mainBody = `
       </div>
     </details>
 
+    <details class="options-block" id="switchDetails" style="display: none">
+      <summary class="dummy-radio">
+        スイッチ
+      </summary>
+      <div class="options">
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="switch-left">
+          <div class="mini mini-switch left"></div>
+        </div>
+        <div class="radio-wrapper">
+          <input type="radio" name="part" value="switch-up">
+          <div class="mini mini-switch up"></div>
+        </div>
+      </div>
+    </details>
+
     <label id="wireDetails" style="display: none">
       <input type="radio" name="part" value="wire">
       導線
@@ -106,7 +127,8 @@ const scripts = [
 	"wire.js",
 	"resistor.js",
 	"battery.js",
-	"led.js"
+	"led.js",
+  "switch.js"
 ];
 
 Promise.all(

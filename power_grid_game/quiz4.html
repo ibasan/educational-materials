@@ -21,12 +21,23 @@
       Wire.setButtonUI();
       QUIZ.setButtonUI();
       QUIZ.question = "クイズ4「危険な回路に注意！」<br><br>クリア条件：<br>　安全な回路を作成せよ";
+      QUIZ.correctMessage = "どんなに曲がっていても、繋がっていれば電気は流れます。";
       QUIZ.run();
 
       gridlist[5][1].overrideCell("battery-up");
       gridlist[5][1].switchEditable(false);
       gridlist[5][9].overrideCell("resistor-up");
       gridlist[5][9].switchEditable(false);
+
+      gridlist[5][3].switchEditable(false);
+      gridlist[4][3].switchEditable(false);
+      gridlist[3][3].switchEditable(false);
+
+      gridlist[4][6].switchEditable(false);
+      gridlist[3][6].switchEditable(false);
+      gridlist[2][6].switchEditable(false);
+      gridlist[1][6].switchEditable(false);
+      gridlist[0][6].switchEditable(false);
 
       QUIZ.setAnswer(()=>{
         if (Battery.simpleShortCircuitCheck() && gridlist[4][1].nodeId) {

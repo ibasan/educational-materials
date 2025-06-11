@@ -84,8 +84,14 @@ class Wire extends Cell{
   }
 
   calcUpdate(result) {
+    this.checkVI(result);
+    return false;
+  }
+
+  checkVI(result, VorI = "V"){
+    if (typeof result.entries === "function") result = result.entries();
     const getLastValue = (a,b) => {
-      const filtered = Array.from(result.entries())
+      const filtered = Array.from(result)
         .filter(([key]) => {
         const parts = key.split('_');
         return parts.includes(a+"") && parts.includes(b+"");
@@ -93,12 +99,15 @@ class Wire extends Cell{
       return filtered.length ? filtered[filtered.length - 1][1] : undefined;
     }
 
-    if (false || debug) {
-      const preEle = this.el.getElementsByClassName('debug');
-      if (preEle.length >0) preEle[0].remove();
-
-      this.el.innerHTML += "<span class='debug' style='position: absolute; top: 0'>"+getLastValue(this.nodeId, "V")+"</span>";
+    const preEle = this.el.getElementsByClassName('debug');
+    if (preEle.length >0) preEle[0].remove();
+    const oneV = getLastValue(this.nodeId, VorI);
+    
+    if (true || debug) {
+      this.el.innerHTML += "<span class='debug' style='position: absolute; top: 0'>"+oneV+"</span>";
     }
+
+    return oneV;
   }
 
 }

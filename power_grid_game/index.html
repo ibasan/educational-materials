@@ -116,7 +116,7 @@
 			const button = main.appendChild(document.createElement('button'));
 			button.textContent = "クイズ" + i;
 			button.addEventListener("click", ()=>{
-				if (i>6) {alert("まだ出来てないよ～！"); return;}
+				if (i>9) {alert("まだ出来てないよ～！"); return;}
 				window.location.href = "./quiz" + i +".html";
 			});
 		}

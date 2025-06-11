@@ -52,9 +52,10 @@ class Cell {
   }
 
   static connectableType = [];
-  static electricPart = ["wire", "battery", "resistor", "led"];
+  static electricPart = ["wire", "battery", "resistor", "led", "switch"];
   static priority = 0;
   static nextNodeId = 0;
+  static update = [];
 
   constructor(x, y) {
     this.x = x;
@@ -97,6 +98,9 @@ class Cell {
   #replace_obj(obj){
     gridlist[this.y][this.x].el.replaceWith(obj.el);
     gridlist[this.y][this.x]=obj;
+
+    // 外部に対して盤面の更新通知を行う
+    Cell.update.forEach(f => f(obj));
   }
 
   static reBuildNodes(obj) { //再構築するコード
@@ -111,7 +115,7 @@ class Cell {
     obj.resetNodeId(resetTime-1);
     obj.resetEquationsSignal(resetTime);
 
-    Cell.calc();
+    return Cell.calc();
   }
 
   static calc() {
@@ -125,9 +129,10 @@ class Cell {
     const tempCollect = Array.from(Cell.collectRenewCell);
     const reCalcRequest = tempCollect.filter(cell => cell.calcUpdate(window.lastCalcAns)); //計算結果の通知
     if (reCalcRequest.length !=0 ) {
-      Cell.calc();
+      return Cell.calc();
     } else {
       tempCollect.forEach(cell => cell.calcEndFlag = {});
+      return resultTemp;
     }
   }
 
@@ -246,6 +251,8 @@ class Cell {
       new_obj = new Resistor(this.x, this.y);
     }else if(currentPart.startsWith("led")){
       new_obj = new LED(this.x, this.y);
+    }else if(currentPart.startsWith("switch")){
+      new_obj = new Switch(this.x, this.y);
     }
 
     if (new_obj !== null) {

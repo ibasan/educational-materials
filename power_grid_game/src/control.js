@@ -138,12 +138,17 @@ document.querySelectorAll('input[name="part"]').forEach(radio => {
     const clone = temp.content.cloneNode(true);
     ele.appendChild(clone);
   });
+  Array.from(document.getElementsByClassName('mini-switch')).forEach(ele=>{
+    const temp = document.getElementById("switch-template");
+    const clone = temp.content.cloneNode(true);
+    ele.appendChild(clone);
+  });
 })();
 
 document.querySelectorAll('.radio-wrapper').forEach(div => {
   div.addEventListener('click', function(e) {
     const input = this.querySelector('input[type="radio"]');
-    if (input) {
+    if (input && !input.disabled) {
       input.checked = true;
       input.dispatchEvent(new Event('change', {bubbles:true}));
     }

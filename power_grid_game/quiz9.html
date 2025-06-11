@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>電子回路ゲーム</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.2.1/math.min.js" integrity="sha512-VtnWaMtJXqcmxwDizzsWJOnZdX3Jaf9qlFWXEN4nL1KaoQzyNC+1f8lHFD6qd38cyfMgUeucF+pJCTc2p2SsVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./src/top.css">
+  <script src="./src/quiz.js"></script>
+</head>
+<body>
+  <script src="./src/include.js"></script>
+  <script>
+    let debug = false;
+    const gridSize = 11;
+    let scale = 1.7;
+
+    window.addEventListener("ready", ()=>{
+      createGrid();
+      applyTransform();
+      Wire.setButtonUI();
+      Switch.setButtonUI();
+      QUIZ.setButtonUI();
+      QUIZ.question = "クイズ9「両方をONにすると」<br><br>クリア条件：<br>2つのスイッチを両方ONにすると電気が流れる回路を作成せよ";
+      QUIZ.correctMessage = "スイッチを直列に接続すると、両方をONにするとONになる回路が出来ます。";
+      QUIZ.run();
+
+      gridlist[4][1].overrideCell("wire");
+      gridlist[4][1].switchEditable(false);
+      gridlist[5][1].overrideCell("battery-up");
+      gridlist[5][1].switchEditable(false);
+      gridlist[6][1].overrideCell("wire");
+      gridlist[6][1].switchEditable(false);
+
+      gridlist[3][9].overrideCell("wire");
+      gridlist[3][9].switchEditable(false);
+      gridlist[4][9].overrideCell("resistor-up");
+      gridlist[4][9].switchEditable(false);
+
+      gridlist[5][9].overrideCell("wire");
+      gridlist[5][9].switchEditable(false);
+      gridlist[5][8].switchEditable(false);
+      gridlist[5][10].switchEditable(false);
+
+      gridlist[6][9].overrideCell("led-down");
+      gridlist[6][9].switchEditable(false);
+      gridlist[7][9].overrideCell("wire");
+      gridlist[7][9].switchEditable(false);
+
+      window.switchDisableFlag = false;
+      Cell.update.push(()=>{
+        const flag = gridlist.flat().filter(e=>e.type=="switch").length >= 2;
+        if (flag != window.switchDisableFlag) {
+          Array.from(document.getElementsByTagName("input")).forEach(e=>{
+            if (e.value.startsWith("switch")) e.disabled = flag;
+            if (flag && e.value == "none") e.click();
+          });
+          window.switchDisableFlag = flag;
+        }
+      });
+      QUIZ.setAnswer(()=>{
+        if (!Battery.simpleShortCircuitCheck()) return false;
+
+        const allWire = Array.from(Cell.collectRenewCell).filter(e => e.type == "wire");
+        const length = allWire.filter(e => e.checkVI(window.lastCalcAns) === undefined).length;
+        const size=new Set(allWire.map(e=>e.nodeId)).size;
+        return size == 5 && length == 0;
+      });
+    });
+
+  </script>
+
+</body>
+</html>

@@ -298,6 +298,51 @@ body {
 }
 
 
+
+
+
+.switch-open {
+  position: relative;
+  width: 40px; height: 40px;
+}
+
+.switch-2point::before {
+  content: "";
+  position: absolute;
+  bottom: -1px; width: 4px;
+  left: 18px;
+  height: 8px;
+  background: #a00;
+}
+.switch-2point::after {
+  content: "";
+  position: absolute;
+  top: -1px; width: 4px;
+  right: 18px;
+  height: 8px;
+  background: #a00;
+}
+
+/* 可動接点（スイッチアーム：斜め上に開いている） */
+.switch-2point .arm {
+  position: absolute;
+  top: 7px;
+  left: 18px;
+  width: 4px;
+  height: 26px;
+  background: #000;
+  transform: rotate(-30deg);
+  transform-origin: left top;
+  z-index: 1;
+}
+.close .switch-2point .arm {
+  transform: rotate(0deg);
+}
+
+
+
+
+
 .radio-wrapper {
   display: flex;
   align-items: center;

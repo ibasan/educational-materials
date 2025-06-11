@@ -7,6 +7,7 @@ class QUIZ {
   static #checkAnswer = ()=>{return true;};
   static mistakeReload = false;
   static question = "";
+  static correctMessage = "";
 
   static setButtonUI(){
     const button = document.body.appendChild(document.createElement("button"));
@@ -14,7 +15,8 @@ class QUIZ {
     button.textContent = "回答する→";
     button.addEventListener("click", ()=>{
       if (QUIZ.#checkAnswer()){
-        QUIZ.createDialog("正解！<div style='font-size:1rem;'>閉じるボタンを押してクイズ一覧に戻る</div>", ()=>{
+        if (QUIZ.correctMessage!="") QUIZ.correctMessage = "<br>【プチ解説】"+QUIZ.correctMessage+"<br><br>"
+        QUIZ.createDialog(`正解！<div style='font-size:1rem;'>${QUIZ.correctMessage}閉じるボタンを押してクイズ一覧に戻る</div>`, ()=>{
           window.location.href = "./index.html";
         });
       }else{
