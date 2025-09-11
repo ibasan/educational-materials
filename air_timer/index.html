@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>インターバルタイマー</title>
+	<style type="text/css">
+		html{
+			height: 100vh;
+			margin: 0 auto;
+			width: 100vw;
+			background: #fff5e6;
+		}
+		body{
+			width: 360px;
+			height: 100vh;
+			margin: 0 auto;
+			background: white;
+
+			div{
+				width: 100%;
+			}
+		}
+		#main{
+			height: 80vh;
+			text-align: center;
+
+			#text{
+				padding-top: 3vh;
+				height: 15vh;
+				font-size: 10vh;
+			}
+			#count{
+				padding-top: 7.5vh;
+				height: 55vh;
+				font-size: min(50vh, 220px);
+			}
+		}
+		#now_set{
+			display: flex;
+			padding: 0.5vh 0;
+			height: 9vh;
+			text-align: right;
+			font-size: calc(440px / 22);
+
+			> #now_set_inner{
+				margin: 0 auto;
+			}
+		}
+		#option{
+			height: 10vh;
+			display: flex;
+			justify-content: space-evenly;
+
+			> button{
+				height: 9vh;
+				width: 35%;
+			}
+		}
+		input[type="number"]{
+			font-size: calc(440px / 22);
+			width: 3em;
+		}
+
+		.air_true{
+			background: #87ceeb;
+		}
+		.air_false{
+			background: #eba4a4;
+		}
+	</style>
+	<script type="text/javascript">
+		let open_timer={now:10, min:3, max:10};
+		let close_timer={now:30, min:5, max:30};
+		let air_flag=true;
+		let counter_id=null;
+		window.addEventListener("load", ()=>{
+			//開始ボタン
+			const start=document.getElementById('start');
+			const text=document.getElementById("text");
+			const count=document.getElementById("count");
+			const main=document.getElementById("main");
+			const stop_func=()=>{
+				clearInterval(counter_id);
+				counter_id=null;
+				start.innerText="開始";
+				text.innerText="STOP";
+				count.innerText=0;
+				air_flag=true;
+
+				main.classList.remove("air_true");
+				main.classList.remove("air_false");
+			};
+			start.addEventListener("click", ()=>{
+				if(counter_id===null){
+					//初回限定の処理
+					open_timer.now=range(open_timer.min, open_timer.max);
+					close_timer.now=range(close_timer.min, close_timer.max);
+
+					start.innerText="停止";
+					text.innerText="OPEN";
+					air_flag=true;
+					count.innerText=open_timer.now;
+					main.classList.add("air_true");
+					main.classList.remove("air_false");
+
+					const decrement=()=>{
+						//ここに各カウントの処理
+						if(air_flag){
+							open_timer.now--;
+							count.innerText=open_timer.now;
+							text.innerText="OPEN";
+							main.classList.add("air_true");
+							main.classList.remove("air_false");
+
+							if(open_timer.now<=0){
+								air_flag=false;
+								close_timer.now=range(close_timer.min, close_timer.max);
+							}
+
+						}else{
+							close_timer.now--;
+							count.innerText=close_timer.now;
+							text.innerText="CLOSE";
+							main.classList.remove("air_true");
+							main.classList.add("air_false");
+
+							if(close_timer.now<=0){
+								air_flag=true;
+								open_timer.now=range(open_timer.min, open_timer.max);
+							}
+						}
+					}
+					counter_id=setInterval(decrement, 1000);
+
+				}else{
+					stop_func();
+				}
+			});
+
+			//設定ボタン
+			const setting=document.getElementById('setting');
+			setting.addEventListener("click", ()=>{
+				const open_min=document.getElementById("open_min");
+				const open_max=document.getElementById("open_max");
+				const close_min=document.getElementById("close_min");
+				const close_max=document.getElementById("close_max");
+				open_timer.min=open_min.value-0;
+				open_timer.max=open_max.value-0;
+				close_timer.min=close_min.value-0;
+				close_timer.max=close_max.value-0;
+				setting.innerText="設定完了！";
+				setTimeout(()=>{
+					setting.innerText="設定";
+				}, 3000);
+			});
+		});
+
+		function range(arg_min, arg_max){
+			min=Math.min(arg_min, arg_max);
+			max=Math.max(arg_min, arg_max);
+			return Math.floor(Math.random()*(max-min+1)+min);
+		}
+	</script>
+</head>
+<body>
+	<div id="main">
+		<div id="text">
+			STOP
+		</div>
+		<div id="count">0</div>
+	</div>
+	<div id="now_set">
+		<span id="now_set_inner">
+			OPEN：<input type="number" value="3" id="open_min">
+			-
+			<input type="number" value="10" id="open_max">秒
+			<br>
+			CLOSE：<input type="number" value="5" id="close_min">
+			-
+			<input type="number" value="30" id="close_max">秒
+		</span>
+	</div>
+	<div id="option">
+		<button id="start">開始</button>
+		<button id="setting">設定</button>
+	</div>
+</body>
+</html>
