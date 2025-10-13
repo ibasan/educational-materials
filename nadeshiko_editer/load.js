@@ -53,8 +53,8 @@ window.addEventListener("load", ()=>{
 			//自作プラグインの読み込み
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_leaflet.js",
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_convenient.js",
-			//"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_minihash.js",
-			"./wnako3/plugin_minihash.js"
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_minihash.js",
+			//"./wnako3/plugin_minihash.js"
 			//"./wnako3/plugin_convenient.js"
 
 		].forEach(wnako_plugin_url=>{
