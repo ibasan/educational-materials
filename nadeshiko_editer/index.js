@@ -205,7 +205,7 @@ window.addEventListener("load", ()=>{
 		result_clear();
 	});
 	code_clear.addEventListener("click", ()=>{
-		if(confirm("現在編集中のプログラムが削除しますか？")){
+		if(confirm("現在編集中のプログラムを削除しますか？")){
 			code.innerHTML="<div></div>";
 			result_clear();
 		}

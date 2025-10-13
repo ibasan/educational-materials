@@ -34,6 +34,11 @@ window.addEventListener("load", ()=>{
 	const leaflet_js=document.head.appendChild(document.createElement('script'));
 	leaflet_js.src="https://github.kasumigaura.work/nadeshiko_editer/leaflet/leaflet.js";
 
+	// xxHashの読み込み
+	const xxhash_js=document.head.appendChild(document.createElement('script'));
+	xxhash_js.src="https://github.kasumigaura.work/nadeshiko_editer/xxhash-wasm.js";
+
+
 	//wnakoの読み込み
 	let script=document.head.appendChild(document.createElement('script'));
 	script.src="https://github.kasumigaura.work/nadeshiko_editer/wnako3/wnako3.js";
@@ -47,7 +52,9 @@ window.addEventListener("load", ()=>{
 
 			//自作プラグインの読み込み
 			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_leaflet.js",
-			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_convenient.js"
+			"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_convenient.js",
+			//"https://github.kasumigaura.work/nadeshiko_editer/wnako3/plugin_minihash.js",
+			"./wnako3/plugin_minihash.js"
 			//"./wnako3/plugin_convenient.js"
 
 		].forEach(wnako_plugin_url=>{
