@@ -153,7 +153,7 @@ window.addEventListener("load", ()=>{
 
 		//改行記号まで一度に削除した際に、原因不明のspanが生成される問題
 		//根本解決ではないので、注意
-		if(now_code.indexOf('<span style="font-size:')!=-1){
+		if(now_code.indexOf('<span style="')!=-1){
 			Array.from(code.children).forEach(e=>{
 				const e_inner_span=e.getElementsByTagName('span');
 				if(e_inner_span.length!=0){
@@ -600,5 +600,6 @@ window.addEventListener("load", ()=>{
 		}
 		marker_list[id]=L.marker(latlng).addTo(map_list[id]);
 	}
+
 
 });
