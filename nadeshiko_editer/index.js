@@ -142,6 +142,15 @@ window.addEventListener("load", ()=>{
 			}
 		}
 
+		//コメント行を灰色に
+		Array.from(code.children).forEach(e=>{
+			if(e.innerText.trim().startsWith("//")){
+				e.classList.add("comment");
+			}else{
+				e.classList.remove("comment");
+			}
+		});
+
 		//改行記号まで一度に削除した際に、原因不明のspanが生成される問題
 		//根本解決ではないので、注意
 		if(now_code.indexOf('<span style="font-size:')!=-1){
