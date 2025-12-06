@@ -78,7 +78,7 @@ window.addEventListener("load", ()=>{
 				if(e.level==='stdout') {
 					text_output.innerHTML+=e.noColor+"<br>";
 				}else if(e.level==='warn' || e.level==='error') {
-					if(e.noColor==='[警告]undefined') return; //意味不明なエラー?の出力を回避できるらしい
+					if(e.noColor==='[警告]undefined' || e.browserConsole[0].endsWith("既に定義されています。")) return; //意味不明なエラー?の出力を回避できるらしい
 					console.log(...e.browserConsole);
 
 					if(e.noColor.indexOf('古い形式なので正しく動作しない可能性があります')!=-1) return;
@@ -121,4 +121,5 @@ window.addEventListener("load", ()=>{
 		});
 	}, 300);
 });
+
 
