@@ -113,7 +113,7 @@ window.addEventListener("load", ()=>{
 		if(typeof navigator.nako3!=="undefined" && typeof navigator.nako3.lex!=="undefined"){
 			let find_key;
 			try{
-				find_key=new Set(navigator.nako3.lex(code.innerHTML).tokens.reduce((old,now)=>now.type=="func"?[...old,now.value]:old,[]));
+				find_key=new Set(navigator.nako3.lex(code.innerText).tokens.reduce((old,now)=>now.type=="func"?[...old,now.value]:old,[]));
 			}catch(error){
 				find_key=old_find_key;
 			}
@@ -603,3 +603,4 @@ window.addEventListener("load", ()=>{
 
 
 });
+
